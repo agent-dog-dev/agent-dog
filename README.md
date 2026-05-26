@@ -4,7 +4,7 @@
 
 ### **The DOG Army's safer trading companion.**
 
-*Others built an autonomous trader. We built a safer agent workflow you can actually trust.*
+*Built for the DOG Army that wants to keep their sats safe.*
 
 *Four Kraken CLI skills. Paper first. Human in control. Multi-agent ready.*
 
@@ -58,9 +58,7 @@ Kraken CLI / MCP
 
 ## 🚫 Why not "fully autonomous"?
 
-You'll see other submissions describe themselves as **"fully autonomous AI trading systems"** where an LLM "executes trades directly via the Kraken CLI."
-
-Agent DOG made a different choice. Here's why.
+Some AI trading bots make the LLM both the decision-maker AND the executor. Agent DOG made a different choice. Here's why.
 
 ### Real orders are irreversible
 
@@ -70,7 +68,7 @@ An LLM that decides AND executes trades is fast — but it's also non-determinis
 
 ### What Agent DOG does instead
 
-| Capability | Autonomous bots | Agent DOG |
+| Capability | Autonomous AI bots in general | Agent DOG |
 |------------|-----------------|-----------|
 | LLM in decision loop | ✅ | ❌ Deterministic Compass |
 | Auto-execute orders | ✅ | ❌ Human `--confirm` required |
@@ -98,7 +96,7 @@ live trading          ← (future, opt-in only, user's own keys, never default)
 
 Autonomy can be added later if the user wants it, with their own keys, on their own terms. **Safety is the product, not a footnote.**
 
-> *Others built an autonomous trader. We built a safer agent workflow the DOG Army can actually trust.*
+> *Safety is the product. Built for the DOG Army.*
 
 ---
 
@@ -415,7 +413,7 @@ Only `market` and `paper` services exposed. No `--allow-dangerous`. No `account`
 
 ### What makes Agent DOG different
 
-| Feature | Most submissions | Agent DOG |
+| Feature | Common pattern   | Agent DOG |
 |---------|------------------|-----------|
 | LLM in decision loop | Yes | **No — deterministic Compass** |
 | Autonomous execution | Yes | **No — human `--confirm` required** |
