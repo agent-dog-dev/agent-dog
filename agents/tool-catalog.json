@@ -1,0 +1,98 @@
+{
+  "name": "agent-dog",
+  "version": "0.3.0",
+  "description": "Paper-first DOG Army agent layer on Kraken CLI",
+  "tools": [
+    {
+      "name": "beacon-skill",
+      "command": "npm run agent:ticker",
+      "description": "Read DOGUSD market state via Kraken CLI",
+      "dangerous": false,
+      "auth_required": false,
+      "asset": "DOGUSD",
+      "output_format": "json",
+      "wraps": "kraken ticker DOGUSD -o json"
+    },
+    {
+      "name": "beacon-orderbook",
+      "command": "npm run agent:orderbook",
+      "description": "Read DOGUSD orderbook depth",
+      "dangerous": false,
+      "auth_required": false,
+      "asset": "DOGUSD",
+      "output_format": "json",
+      "wraps": "kraken orderbook DOGUSD --count 10 -o json"
+    },
+    {
+      "name": "beacon-ohlc",
+      "command": "npm run agent:ohlc",
+      "description": "Read DOGUSD OHLC candles",
+      "dangerous": false,
+      "auth_required": false,
+      "asset": "DOGUSD",
+      "output_format": "json",
+      "wraps": "kraken ohlc DOGUSD --interval 60 -o json"
+    },
+    {
+      "name": "compass-skill",
+      "command": "npm run agent:decision",
+      "description": "Deterministic Pack Index decision engine for DOGUSD",
+      "dangerous": false,
+      "auth_required": false,
+      "asset": "DOGUSD",
+      "output_format": "json",
+      "returns": ["decision", "confidence", "reasons", "flags", "metrics"]
+    },
+    {
+      "name": "anchor-preview",
+      "command": "npm run agent:preview",
+      "description": "Preview a paper trade with cost, fee, and risk",
+      "dangerous": false,
+      "auth_required": false,
+      "asset": "DOGUSD",
+      "output_format": "json",
+      "requires_confirmation": true,
+      "max_position_pct": 5
+    },
+    {
+      "name": "anchor-execute",
+      "command": "bash scripts/dog_paper_execute.sh",
+      "description": "Execute a paper trade (requires --confirm flag)",
+      "dangerous": false,
+      "auth_required": false,
+      "asset": "DOGUSD",
+      "paper_only": true,
+      "requires_confirmation": true,
+      "requires_flag": "--confirm",
+      "max_position_pct": 5
+    },
+    {
+      "name": "pack-status",
+      "command": "npm run agent:status",
+      "description": "Show paper portfolio state",
+      "dangerous": false,
+      "auth_required": false,
+      "output_format": "json",
+      "wraps": "kraken paper status -o json"
+    }
+  ],
+  "safety": {
+    "live_trading": false,
+    "paper_only": true,
+    "api_key_required": false,
+    "human_confirmation_required": true,
+    "max_position_pct": 5,
+    "pair_locked": "DOGUSD",
+    "rejects_pair": "XDGUSD"
+  },
+  "agent_compatibility": [
+    "claude-code",
+    "claude-desktop",
+    "cursor",
+    "codex",
+    "openclaw",
+    "gemini-cli",
+    "goose",
+    "terminal"
+  ]
+}

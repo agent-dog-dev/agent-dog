@@ -1,0 +1,43 @@
+{
+  "name": "agent-dog",
+  "version": "0.3.0",
+  "description": "Bitcoin-native AI agent skills for the DOG Army, built on Kraken CLI",
+  "type": "module",
+  "main": "src/telegram.js",
+  "scripts": {
+    "check": "node --check src/config.js && node --check src/state.js && node --check src/reporter.js && node --check src/telegram.js && node --check src/server.js && echo '✅ Syntax OK'",
+    "telegram": "node src/telegram.js",
+    "dashboard": "node src/server.js",
+    "dev": "node src/server.js",
+    "test": "npm run check && echo '✅ All checks passed'",
+    "safety": "cat docs/SAFETY.md",
+    "agent:ticker": "bash scripts/dog_ticker.sh",
+    "agent:orderbook": "bash scripts/dog_orderbook.sh",
+    "agent:ohlc": "bash scripts/dog_ohlc.sh",
+    "agent:status": "bash scripts/dog_paper_status.sh",
+    "agent:decision": "bash scripts/dog_decision.sh",
+    "agent:preview": "bash scripts/dog_paper_preview.sh",
+    "agent:beacon": "bash scripts/dog_ticker.sh",
+    "agent:compass": "bash scripts/dog_decision.sh",
+    "agent:anchor": "bash scripts/dog_paper_preview.sh",
+    "agent:pack": "bash scripts/dog_decision.sh",
+    "agent:demo": "bash scripts/agent_dog_demo.sh"
+  },
+  "keywords": [
+    "kraken-cli",
+    "ai-agent",
+    "paper-trading",
+    "dog-army",
+    "bitcoin-runes",
+    "agent-dog"
+  ],
+  "author": "agent-dog-dev",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

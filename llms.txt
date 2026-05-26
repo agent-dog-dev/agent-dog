@@ -1,0 +1,28 @@
+# Agent DOG
+
+> Paper-first DOG Army agent layer on top of Kraken CLI.
+
+Agent DOG is a pack of 4 reusable agent skills for safe paper
+trading of DOGUSD ($DOG Runes on Bitcoin layer-1). Built on Kraken
+CLI. Works with Claude Code, Cursor, Codex, OpenClaw, and Gemini CLI.
+
+## Important Resources
+
+- [README](README.md) — Project overview, install, usage
+- [CONTEXT](CONTEXT.md) — Runtime context for agents
+- [AGENTS](AGENTS.md) — Full integration guide
+- [CLAUDE](CLAUDE.md) — Claude-specific guidance
+- [MCP Compatibility](docs/MCP_AGENT_COMPATIBILITY.md) — MCP setup
+- [Safety Contract](docs/SAFETY.md) — Paper-only rules
+
+## Skills
+
+- [beacon-skill](skills/beacon-skill/SKILL.md) — Market data
+- [compass-skill](skills/compass-skill/SKILL.md) — Decision engine
+- [anchor-skill](skills/anchor-skill/SKILL.md) — Preview & confirmation
+- [pack-recipe](skills/pack-recipe/SKILL.md) — End-to-end workflow
+
+## Optional
+
+- [Product Brain Spec](docs/PRODUCT_BRAIN_SPEC.md) — Pack Index spec
+- [Demo Script](docs/DEMO_SCRIPT.md) — 90s video walkthrough
