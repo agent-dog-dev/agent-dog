@@ -56,30 +56,6 @@ Kraken CLI / MCP
 
 ---
 
-## 📸 Visual Preview
-
-Live dashboard captured on May 26, 2026.
-
-### Dashboard Overview
-
-The cockpit displays live DOGUSD market data, the deterministic Pack Index, the Decision Engine output, and the read-only paper portfolio.
-
-![Agent DOG Dashboard - Hero](docs/screenshots/01-hero-dashboard.png)
-
-### Market Intelligence
-
-Risk analysis, agent timeline, Bitcoin network context, and the live DOG/USD trade tape — all read-only.
-
-![Agent DOG Dashboard - Market Intelligence](docs/screenshots/02-market-intelligence.png)
-
-### Market Pulse & Safety
-
-Real-time technical indicators (RSI, EMA, VWAP, Volume Impulse) and the safety layer enforced by hard-coded rules.
-
-![Agent DOG Dashboard - Market Pulse & Safety](docs/screenshots/03-market-pulse-safety.png)
-
----
-
 ## 🚫 Why not "fully autonomous"?
 
 Some AI trading bots make the LLM both the decision-maker AND the executor. Agent DOG made a different choice. Here's why.
