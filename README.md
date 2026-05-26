@@ -68,7 +68,7 @@ An LLM that decides AND executes trades is fast — but it's also non-determinis
 
 ### What Agent DOG does instead
 
-| Capability | Autonomous AI bots in general | Agent DOG |
+| Capability | Typical autonomous bot pattern | Agent DOG |
 |------------|-----------------|-----------|
 | LLM in decision loop | ✅ | ❌ Deterministic Compass |
 | Auto-execute orders | ✅ | ❌ Human `--confirm` required |
@@ -413,7 +413,7 @@ Only `market` and `paper` services exposed. No `--allow-dangerous`. No `account`
 
 ### What makes Agent DOG different
 
-| Feature | Common pattern   | Agent DOG |
+| Feature | Typical pattern  | Agent DOG |
 |---------|------------------|-----------|
 | LLM in decision loop | Yes | **No — deterministic Compass** |
 | Autonomous execution | Yes | **No — human `--confirm` required** |

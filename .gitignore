@@ -31,3 +31,13 @@ Thumbs.db
 # Build
 dist/
 build/
+
+# Kraken CLI binary & archives
+kraken-cli-aarch64-apple-darwin/
+kraken-cli-*.tar.gz
+kraken-cli-*.sha256
+
+# Auto-generated JSON snapshots
+kraken_assetpairs.json
+kraken_releases.json
+*_ticker.json
