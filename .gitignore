@@ -27,6 +27,7 @@ Thumbs.db
 # Backup
 *.legacy.md
 *.bak
+*.bak-pre-*
 
 # Build
 dist/
