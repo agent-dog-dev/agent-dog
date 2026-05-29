@@ -14,7 +14,7 @@
 [![Multi-Agent](https://img.shields.io/badge/Works%20with-Claude%20%C2%B7%20Cursor%20%C2%B7%20Codex%20%C2%B7%20OpenClaw-blueviolet)](docs/MCP_AGENT_COMPATIBILITY.md)
 [![Bitcoin Runes](https://img.shields.io/badge/Asset-%24DOG%20on%20Bitcoin%20L1-f7931a)](https://runes.dog)
 
-**Four roles. One pack. Zero risk. Woof to the moon. 🌙**
+**Five in the pack. One human in control. Zero risk. Woof to the moon. 🌙**
 
 </div>
 
@@ -22,7 +22,7 @@
 
 ## 🎯 What is Agent DOG?
 
-**Agent DOG** is a pack of **4 reusable Kraken CLI agent skills** that turn your AI agent into a safe paper-trading companion for **$DOG** (DOG•GO•TO•THE•MOON on Bitcoin Runes — *not* Dogecoin).
+**Agent DOG** is a pack of **4 reusable Kraken CLI agent skills** — plus **🦉 Sage**, an in-dashboard AI educator — that turn your AI agent into a safe paper-trading companion for **$DOG** (DOG•GO•TO•THE•MOON on Bitcoin Runes — *not* Dogecoin).
 
 It runs on top of the official [Kraken CLI](https://github.com/krakenfx/kraken-cli) and works with any AI agent that supports MCP or skills: **Claude Code, Cursor, Codex, OpenClaw, Gemini CLI, Goose, or plain terminal**.
 
@@ -47,12 +47,24 @@ Kraken CLI / MCP
        ↓
 🐕 Helm    logs everything to events/decisions.jsonl
        ↓
+🦉 Sage    explains every step in plain language — never decides
+       ↓
    Human confirms → paper preview → paper-only execution
 ```
 
 **No LLM decides. No bot executes. No surprises.** The AI explains. The Compass decides. The Anchor confirms. The Pack belongs to you.
 
-> Beacon scans. Compass scores. Anchor holds. Helm prepares. The human steers.
+> Beacon scans. Compass scores. Anchor holds. Helm prepares. Sage explains. The human steers.
+
+---
+
+## 🦉 Meet Sage — the AI Education Layer
+
+The four Kraken CLI skills do the work. **Sage** makes it understandable.
+
+Sage is an in-dashboard educational assistant that explains — in plain language — what the Pack Index means, why the Decision Engine says HOLD, what RSI / EMA / VWAP are, and what $DOG actually is. Sage reads the **live dashboard state** to answer in context.
+
+**Sage explains. Sage never decides.** No trade recommendations, ever. The deterministic Compass stays in charge; the human stays in control.
 
 ---
 
@@ -533,4 +545,4 @@ The pack belongs to everyone.
 
 Built with ❤️ for the **DOG Army**.
 
-**Four roles. One pack. Zero risk. Woof to the moon. 🌙**
+**Five in the pack. One human in control. Zero risk. Woof to the moon. 🌙**
