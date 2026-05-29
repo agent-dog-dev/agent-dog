@@ -591,10 +591,10 @@ body{
 const F={dog:{bid:.000702,ask:.000706,last:.000703,high:.000737,low:.000680,volume:120900000,vwap:.00071468,trades:354},decision:{decision:'HOLD',confidence:50,metrics:{spreadPct:.57,volatilityPct:5.26,rangePosition:.58,vwapDistancePct:-1.63},riskFlags:[],reasons:['No strong signal detected']},paper:{startingBalance:10000,currentValue:9999.997,totalTrades:2,openOrders:0,unrealizedPnl:-.003},logs:{logs:[]}};
 const $=id=>document.getElementById(id), price=n=>'$'+Number(n).toFixed(8), usd=n=>'$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4}), vol=n=>n>1e6?(n/1e6).toFixed(2)+'M':String(Math.round(n));
 const clamp=x=>Math.max(0,Math.min(100,Math.round(x)));
-function scores(d,dec,p){let m=dec.metrics||{},sp=Number(m.spreadPct??(((d.ask-d.bid)/d.last)*100||.57)),v=Number(m.volume??d.volume??1),c=Number(dec.confidence??50),rp=Number(m.rangePosition??.5),vd=Number(m.vwapDistancePct??0),vo=Number(m.volatilityPct??5.26),rf=Array.isArray(dec.riskFlags)?dec.riskFlags:[],oo=Number(p.openOrders??0);let liq=clamp(100-sp*20+Math.min(20,Math.log10(Math.max(v,1))*4)),mom=clamp(50+c*.25-Math.abs(vd)*4+(1-Math.abs(rp-.5)*2)*18),risk=clamp(100-rf.length*12-Math.max(0,vo-5)*5),ready=clamp(100-(oo>0?10:0)+Math.min(20,c*.2)),idx=Math.round((liq+mom+risk+ready)/4);let state=idx>=80?'OPTIMAL':idx>=60?'FAVORABLE':idx>=40?'NEUTRAL':idx>=20?'CAUTION':'HIGH RISK';return{liq,mom,risk,ready,idx,state,sp,vo}}
+function scores(d,dec,p){let m=dec.metrics||{},sp=Number(m.spreadPct??(((d.ask-d.bid)/d.last)*100||.57)),v=Number(m.volume??d.volume??1),c=Number(dec.confidence??50),rp=Number(m.rangePosition??.5),vd=Number(m.vwapDistancePct??0),vo=Number(m.volatilityPct??5.26),rf=Array.isArray(dec.riskFlags)?dec.riskFlags:[],oo=Number(p.openOrders??0);let liq=clamp(100-sp*20+Math.min(20,Math.log10(Math.max(v,1))*4)),mom=clamp(50+c*.25-Math.abs(vd)*4+(1-Math.abs(rp-.5)*2)*18),risk=clamp(100-rf.length*12-Math.max(0,vo-5)*5),ready=clamp(100-(oo>0?10:0)+Math.min(20,c*.2)),idx=Math.round((liq+mom+risk+ready)/4);let state=idx>=80?'OPTIMAL':idx>=60?'FAVORABLE':idx>=40?'NEUTRAL':idx>=20?'CAUTION':'HIGH RISK';let bd={liq:{sp:sp,spreadPen:Math.round(sp*20*10)/10,volBonus:Math.round(Math.min(20,Math.log10(Math.max(v,1))*4)*10)/10},mom:{conf:Math.round(c*.25*10)/10,rangeBonus:Math.round((1-Math.abs(rp-.5)*2)*18*10)/10,vwapPen:Math.round(Math.abs(vd)*4*10)/10},risk:{flags:rf.length,flagPen:rf.length*12,volPen:Math.round(Math.max(0,vo-5)*5*10)/10},ready:{ordersPen:(oo>0?10:0),confBonus:Math.round(Math.min(20,c*.2)*10)/10}};return{liq,mom,risk,ready,idx,state,sp,vo,bd}}
 function sb(k,v){$('b-'+k).style.width=v+'%';$('v-'+k).textContent=v}
 function render(s){
- let d=s.dog||F.dog,dec=s.decision||F.decision,p=s.paper||F.paper,sc=scores(d,dec,p);
+ let d=s.dog||F.dog,dec=s.decision||F.decision,p=s.paper||F.paper,sc=scores(d,dec,p);window.__packScores=sc;
  $('price').textContent=price(d.last); $('bid').textContent=price(d.bid); $('ask').textContent=price(d.ask); $('high').textContent=price(d.high); $('low').textContent=price(d.low); $('vwap').textContent=price(d.vwap); $('volume').textContent=vol(d.volume); $('spread').textContent=sc.sp.toFixed(2)+'%'; $('trades').textContent=d.trades ?? '-';
  $('pack-index').textContent=sc.idx+'/100'; $('pack-state').textContent=sc.state; sb('liq',sc.liq); sb('mom',sc.mom); sb('risk',sc.risk); sb('ready',sc.ready);
  $('decision').textContent=dec.decision||'HOLD'; $('confidence').textContent='Confidence: '+(dec.confidence??50)+'%'; $('ring').style.background='conic-gradient(var(--purple2) 0 '+(dec.confidence??50)+'%,#232331 '+(dec.confidence??50)+'% 100%)';
@@ -922,21 +922,41 @@ function getSageContext() {
 
 const SAGE_ANSWERS = {
   'pack-index': () => {
+    const s = window.__packScores;
     const ctx = getSageContext();
-    const score = ctx.packIndex !== null ? ctx.packIndex : '??';
-    const state = ctx.packState || 'NEUTRAL';
+    const score = (s && s.idx != null) ? s.idx : (ctx.packIndex != null ? ctx.packIndex : '??');
+    const state = (s && s.state) ? s.state : (ctx.packState || 'NEUTRAL');
+
+    let breakdown;
+    if (s && s.bd) {
+      const b = s.bd;
+      breakdown = `
+        <p style="margin-top:10px"><strong>Live calculation</strong> — deterministic, no LLM:</p>
+        <ul>
+          <li><strong>Liquidity = ${s.liq}</strong> ← clamp(100 − spread ${b.liq.sp.toFixed(2)}%×20 [−${b.liq.spreadPen}] + volume [+${b.liq.volBonus}])</li>
+          <li><strong>Momentum = ${s.mom}</strong> ← clamp(50 + confidence [+${b.mom.conf}] + range [+${b.mom.rangeBonus}] − VWAP dist [−${b.mom.vwapPen}])</li>
+          <li><strong>Risk = ${s.risk}</strong> ← clamp(100 − ${b.risk.flags} risk flag(s) [−${b.risk.flagPen}] − excess volatility [−${b.risk.volPen}])</li>
+          <li><strong>Readiness = ${s.ready}</strong> ← clamp(100 − open orders [−${b.ready.ordersPen}] + confidence [+${b.ready.confBonus}])</li>
+        </ul>
+        <p><strong>Pack Index = (${s.liq} + ${s.mom} + ${s.risk} + ${s.ready}) ÷ 4 = ${s.idx}/100</strong></p>
+      `;
+    } else {
+      breakdown = `
+        <p>Your 4 sub-scores right now:</p>
+        <ul>
+          <li><strong>Liquidity</strong>: ${ctx.liquidity != null ? ctx.liquidity : '?'}/100</li>
+          <li><strong>Momentum</strong>: ${ctx.momentum != null ? ctx.momentum : '?'}/100</li>
+          <li><strong>Risk</strong>: ${ctx.risk != null ? ctx.risk : '?'}/100</li>
+          <li><strong>Readiness</strong>: ${ctx.readiness != null ? ctx.readiness : '?'}/100</li>
+        </ul>
+      `;
+    }
 
     return `
       <h4>🐕 The Pack Index — Currently ${score}/100 (${state})</h4>
-      <p>The Pack Index summarizes market conditions for $DOG (DOGUSD).</p>
-      <p>Right now your 4 sub-scores are:</p>
-      <ul>
-        <li><strong>Liquidity</strong>: ${ctx.liquidity !== null ? ctx.liquidity : '?'}/100 — how easily you can buy/sell</li>
-        <li><strong>Momentum</strong>: ${ctx.momentum !== null ? ctx.momentum : '?'}/100 — direction strength</li>
-        <li><strong>Risk</strong>: ${ctx.risk !== null ? ctx.risk : '?'}/100 — volatility safety (lower = riskier)</li>
-        <li><strong>Readiness</strong>: ${ctx.readiness !== null ? ctx.readiness : '?'}/100 — overall setup quality</li>
-      </ul>
-      <p>Higher Pack Index = better conditions. <strong>No LLM decides this.</strong> Pure math, fully transparent.</p>
+      <p>The Pack Index summarizes market conditions for $DOG (DOGUSD). It combines Liquidity, Momentum, Risk and Readiness.</p>
+      ${breakdown}
+      <p>Higher = better conditions. <strong>No LLM decides this — pure, auditable math.</strong></p>
     `;
   },
 
