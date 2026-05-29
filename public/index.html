@@ -118,7 +118,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .ritem .name{color:var(--muted)}
 .ritem b{font-family:"JetBrains Mono",ui-monospace,monospace}
 .warn{color:var(--gold)}
-.timeline{height:170px}
+.timeline{height:300px}
 .thead{display:flex;align-items:center;justify-content:space-between}
 .refresh{color:var(--muted);font-size:12px}
 .events{display:flex;flex-direction:column;gap:8px;margin-top:16px}
@@ -285,6 +285,110 @@ body{
   .brand-title-row .sub{margin-left:0!important;font-size:10px!important;letter-spacing:.16em!important}
 }
 
+/* ===== SAGE 🦉 Panel ===== */
+.sage-panel {
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(20, 20, 30, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+}
+.sage-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.sage-panel .panel-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #e2e8f0;
+}
+.sage-panel .panel-subtitle {
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+}
+.sage-faq-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.sage-question {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.sage-question:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.7);
+  transform: translateY(-1px);
+}
+.sage-question.active {
+  background: rgba(139, 92, 246, 0.5);
+  color: white;
+  border-color: rgba(139, 92, 246, 0.9);
+}
+.sage-answer {
+  min-height: 120px;
+  padding: 16px;
+  background: rgba(10, 10, 15, 0.8);
+  border-radius: 8px;
+  border-left: 3px solid #8b5cf6;
+}
+.sage-placeholder {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+.sage-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 10px;
+}
+.sage-response {
+  color: #e2e8f0;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+.sage-response h4 {
+  color: #c4b5fd;
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+.sage-response p {
+  margin: 8px 0;
+}
+.sage-response ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+.sage-response li {
+  margin: 4px 0;
+}
+.sage-response code {
+  background: rgba(139, 92, 246, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: 'SF Mono', 'Monaco', monospace;
+}
+.sage-response strong {
+  color: #c4b5fd;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -394,7 +498,7 @@ body{
       </div>
       <div class="card pad timeline">
         <div class="thead"><div class="ct" style="margin:0">📋 Agent Timeline</div><div class="refresh">● Auto-refresh: 5s</div></div>
-        <div class="events" id="events"><div class="ev"><span class="time">[ready]</span><span class="actor">BEACON</span><span class="text">DOGUSD market feed loaded from Kraken CLI.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">COMPASS</span><span class="text">Pack Index computed. Decision remains deterministic.</span></div><div class="ev"><span class="time">[safe]</span><span class="actor">ANCHOR</span><span class="text">Paper-only. Human confirmation required.</span></div></div>
+        <div class="events" id="events"><div class="ev"><span class="time">[ready]</span><span class="actor">BEACON</span><span class="text">DOGUSD market feed loaded from Kraken CLI.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">COMPASS</span><span class="text">Pack Index computed. Decision remains deterministic.</span></div><div class="ev"><span class="time">[safe]</span><span class="actor">ANCHOR</span><span class="text">Paper-only. Human confirmation required.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">HELM</span><span class="text">Paper command staged for human review.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">SAGE</span><span class="text">Educational FAQ ready. Ask anything.</span></div></div>
       </div>
     </section>
 
@@ -442,6 +546,27 @@ body{
       <div class="last-update" style="font-size:9px;color:#6c6c80;text-align:right;margin-top:8px;font-family:'JetBrains Mono',monospace">Last update: <span class="last-update-time" id="pulse-last-update">--:--:--</span></div>
     </section>
 
+    <section class="panel sage-panel" id="sage-section">
+      <div class="panel-header">
+        <h2>🦉 ASK SAGE — Pack Educator</h2>
+        <span class="panel-subtitle">Sage explains. Never decides.</span>
+      </div>
+      <div class="sage-faq-buttons">
+        <button class="sage-question" data-q="pack-index">What is Pack Index?</button>
+        <button class="sage-question" data-q="why-hold">Why HOLD now?</button>
+        <button class="sage-question" data-q="indicators">What's RSI / EMA / VWAP?</button>
+        <button class="sage-question" data-q="paper">What is paper trading?</button>
+        <button class="sage-question" data-q="safe">Is Agent DOG safe?</button>
+        <button class="sage-question" data-q="dog">What is $DOG?</button>
+      </div>
+      <div class="sage-answer" id="sage-answer">
+        <div class="sage-placeholder">
+          <span class="sage-icon">🦉</span>
+          <p>Click a question above. Sage will explain.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="card safety">
       <div class="ct">🛡️ Safety Layer</div>
       <div class="sgrid"><div class="sitem"><div class="sico">🚫</div><div><b>No Live Trading</b><span>Paper mode only</span></div></div><div class="sitem"><div class="sico">🔑</div><div><b>No API Key Required</b><span>No credentials needed</span></div></div><div class="sitem"><div class="sico">👤</div><div><b>Human Confirmation</b><span>All actions require approval</span></div></div><div class="sitem"><div class="sico">⚓</div><div><b>Kraken CLI / MCP</b><span>Paper trading framework</span></div></div></div>
@@ -479,7 +604,7 @@ function render(s){
  $('volatility').textContent=sc.vo.toFixed(2)+'%'; $('riskspread').textContent=sc.sp.toFixed(2)+'%'; $('range').textContent=price(d.low)+' - '+price(d.high); $('risk').textContent=sc.risk>=75?'LOW':sc.risk>=55?'MODERATE':'ELEVATED';
  const logs=s.logs?.logs||[];
  if(Array.isArray(logs)&&logs.length){
-   $('events').innerHTML=logs.slice(-3).map((x,i)=>`<div class="ev"><span class="time">[${x.time||'live'}]</span><span class="actor">${(x.actor||['BEACON','COMPASS','ANCHOR'][i]||'PACK').toUpperCase()}</span><span class="text">${x.message||String(x).slice(0,90)}</span></div>`).join('');
+   $('events').innerHTML=logs.slice(-3).map((x,i)=>`<div class="ev"><span class="time">[${x.time||'live'}]</span><span class="actor">${(x.actor||['BEACON','COMPASS','ANCHOR','HELM','SAGE'][i]||'PACK').toUpperCase()}</span><span class="text">${x.message||String(x).slice(0,90)}</span></div>`).join('');
  }
 }
 async function load(){
@@ -767,6 +892,173 @@ setInterval(incrementCycle, 5000); // Synced with main refresh
   loadDogChart();
   setInterval(loadDogChart, 60000);
 })();
+
+// ===== SAGE 🦉 FAQ Handler =====
+function getSageContext() {
+  function readText(selector) {
+    const el = document.querySelector(selector);
+    return el ? el.textContent.trim() : null;
+  }
+
+  function readNumber(selector) {
+    const txt = readText(selector);
+    if (!txt) return null;
+    const num = parseFloat(txt.replace(/[^0-9.\-]/g, ''));
+    return isNaN(num) ? null : num;
+  }
+
+  return {
+    packIndex: readNumber('#pack-index'),
+    packState: readText('#pack-state'),
+    liquidity: readNumber('#v-liq'),
+    momentum: readNumber('#v-mom'),
+    risk: readNumber('#v-risk'),
+    readiness: readNumber('#v-ready'),
+    decision: readText('#decision') || 'HOLD',
+    confidence: readNumber('#confidence'),
+    volatility: readNumber('#volatility')
+  };
+}
+
+const SAGE_ANSWERS = {
+  'pack-index': () => {
+    const ctx = getSageContext();
+    const score = ctx.packIndex !== null ? ctx.packIndex : '??';
+    const state = ctx.packState || 'NEUTRAL';
+
+    return `
+      <h4>🐕 The Pack Index — Currently ${score}/100 (${state})</h4>
+      <p>The Pack Index summarizes market conditions for $DOG (DOGUSD).</p>
+      <p>Right now your 4 sub-scores are:</p>
+      <ul>
+        <li><strong>Liquidity</strong>: ${ctx.liquidity !== null ? ctx.liquidity : '?'}/100 — how easily you can buy/sell</li>
+        <li><strong>Momentum</strong>: ${ctx.momentum !== null ? ctx.momentum : '?'}/100 — direction strength</li>
+        <li><strong>Risk</strong>: ${ctx.risk !== null ? ctx.risk : '?'}/100 — volatility safety (lower = riskier)</li>
+        <li><strong>Readiness</strong>: ${ctx.readiness !== null ? ctx.readiness : '?'}/100 — overall setup quality</li>
+      </ul>
+      <p>Higher Pack Index = better conditions. <strong>No LLM decides this.</strong> Pure math, fully transparent.</p>
+    `;
+  },
+
+  'why-hold': () => {
+    const ctx = getSageContext();
+    const decision = ctx.decision || 'HOLD';
+    const conf = ctx.confidence !== null ? ctx.confidence : '?';
+    const vol = ctx.volatility !== null ? ctx.volatility : '?';
+
+    let reason = '';
+    if (decision === 'RISK_OFF') {
+      reason = `<p>Right now, the Decision Engine is <strong>RISK_OFF</strong> with ${conf}% confidence — high risk detected (volatility ${vol}%).</p>`;
+    } else if (decision === 'HOLD') {
+      reason = `<p>Right now, the Decision Engine is <strong>HOLD</strong> with ${conf}% confidence. Conditions don't justify a trade yet.</p>`;
+    } else if (decision === 'WATCH_BUY') {
+      reason = `<p>Right now, the Decision Engine is <strong>WATCH_BUY</strong> with ${conf}% confidence. Conditions are improving but still wait.</p>`;
+    } else if (decision === 'NO_TRADE') {
+      reason = `<p>Right now, the Decision Engine is <strong>NO_TRADE</strong> with ${conf}% confidence. Technical setup is unclear, stay out.</p>`;
+    } else {
+      reason = `<p>Current decision: <strong>${decision}</strong> (confidence ${conf}%).</p>`;
+    }
+
+    return `
+      <h4>🛑 Decision Engine — Why ${decision}?</h4>
+      ${reason}
+      <p>The Decision Engine outputs one of 4 states:</p>
+      <ul>
+        <li><code>HOLD</code> — wait, don't risk anything yet</li>
+        <li><code>WATCH_BUY</code> — consider buying</li>
+        <li><code>NO_TRADE</code> — avoid</li>
+        <li><code>RISK_OFF</code> — clear danger, sit out</li>
+      </ul>
+      <p>HOLD is the safest default. <strong>The Pack refuses bad trades actively.</strong></p>
+    `;
+  },
+
+  'indicators': `
+    <h4>📊 Technical Indicators</h4>
+    <p><strong>RSI (Relative Strength Index)</strong> — measures speed of price changes.</p>
+    <ul>
+      <li>0-30 = oversold (potential bounce up)</li>
+      <li>70-100 = overbought (potential pullback)</li>
+      <li>30-70 = neutral zone</li>
+    </ul>
+    <p><strong>EMA (Exponential Moving Average)</strong> — smoothed price line.</p>
+    <ul>
+      <li>EMA 9 = short-term trend</li>
+      <li>EMA 21 = medium-term trend</li>
+      <li>Price above EMA = bullish</li>
+    </ul>
+    <p><strong>VWAP (Volume Weighted Average Price)</strong> — average price weighted by trade size. Price above VWAP = buyers winning.</p>
+    <p><strong>Volume Impulse</strong> — current volume vs recent average. Spike = unusual activity.</p>
+  `,
+
+  'paper': `
+    <h4>📝 What is Paper Trading?</h4>
+    <p>Paper trading = practice trading with <strong>fake money</strong>.</p>
+    <p>Agent DOG uses Kraken's paper account feature:</p>
+    <ul>
+      <li>You start with $10,000 (virtual)</li>
+      <li>Every trade is simulated — no real money moves</li>
+      <li>Prices are real (live Kraken feed)</li>
+      <li>P&amp;L is tracked accurately</li>
+    </ul>
+    <p><strong>Why paper-first?</strong> Test the strategy. Understand the agent. Build confidence. <strong>Without risking your sats.</strong></p>
+    <p>Live trading is <strong>hard-coded OFF</strong> in Agent DOG.</p>
+  `,
+
+  'safe': `
+    <h4>🛡️ Is Agent DOG Safe?</h4>
+    <p>Agent DOG is designed safety-first. Hard rules enforced at the code level:</p>
+    <ul>
+      <li>✅ <code>LIVE_TRADING_ENABLED = false</code></li>
+      <li>✅ DOGUSD only (XDGUSD/Dogecoin rejected)</li>
+      <li>✅ Max 5% position size per trade</li>
+      <li>✅ Human <code>--confirm</code> required for every action</li>
+      <li>✅ Dashboard is read-only (no POST/PUT/DELETE)</li>
+      <li>✅ No API key required to view market data</li>
+    </ul>
+    <p><strong>The Pack scans, scores, and prepares. You confirm.</strong> Nothing happens without explicit approval.</p>
+  `,
+
+  'dog': `
+    <h4>🐕 What is $DOG?</h4>
+    <p>$DOG (full name: <strong>DOG•GO•TO•THE•MOON</strong>) is a Bitcoin Runes token.</p>
+    <p>Key facts:</p>
+    <ul>
+      <li>Native to <strong>Bitcoin L1</strong> via the Runes protocol</li>
+      <li>Symbol: 🐕 — the DOG Army community</li>
+      <li>Tradable on Kraken as <code>DOGUSD</code></li>
+    </ul>
+    <p>$DOG is <strong>not Dogecoin</strong> (Dogecoin = <code>XDGUSD</code> on Kraken, a separate coin).</p>
+    <p>Agent DOG is built <strong>by the DOG Army, for the DOG Army</strong>.</p>
+  `
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const buttons = document.querySelectorAll('.sage-question');
+  const answerDiv = document.getElementById('sage-answer');
+
+  if (!buttons.length || !answerDiv) {
+    console.warn('Sage: panel elements not found');
+    return;
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const questionKey = btn.dataset.q;
+      const answer = SAGE_ANSWERS[questionKey];
+
+      if (answer) {
+        const html = typeof answer === 'function' ? answer() : answer;
+        answerDiv.innerHTML = `<div class="sage-response">${html}</div>`;
+      } else {
+        answerDiv.innerHTML = `<div class="sage-response"><p>Sage is silent on this one.</p></div>`;
+      }
+    });
+  });
+});
 
 </script>
 </body>
