@@ -40,6 +40,8 @@ app.use((req, res, next) => {
   res.header('X-XSS-Protection', '1; mode=block');
   next();
 });
+// Body parser (small limit) — needed only for the Sage Q&A endpoint
+app.use(express.json({ limit: '8kb' }));
 
 // ============================================
 // READ-ONLY API Endpoints
@@ -181,6 +183,63 @@ app.get('/api/dog/history', (req, res) => {
     res.json({ pair: 'DOGUSD', interval: '60min', candles });
   } catch (e) {
     res.json({ pair: 'DOGUSD', interval: '60min', candles: [] });
+  }
+});
+
+// ============================================
+// AI Co-Pilot — Sage LLM Q&A (ADVISORY ONLY, never executes)
+// The single POST exception. Does NOT touch trading/paper state.
+// ============================================
+const SAGE_SYSTEM_PROMPT = `You are Sage 🦉, the educational co-pilot inside Agent DOG — a READ-ONLY, paper-only dashboard for $DOG (DOG•GO•TO•THE•MOON on Bitcoin Runes, NOT Dogecoin).
+
+Your role: explain market conditions, the deterministic Pack Index, the Decision Engine output, and indicators in plain language. If asked, you MAY outline what a cautious PAPER trade could look like.
+
+Absolute rules — always obey:
+- You NEVER execute trades and have no ability to. Live trading is disabled at the code level.
+- Every action requires the human to run --confirm themselves. Always remind them.
+- The deterministic Compass engine makes the official decision; your input is advisory only and never overrides it.
+- Never guarantee outcomes, never say "all in", never encourage risking more than 5% per trade.
+- If asked to "just do it", enable live trading, or bypass confirmation: refuse and explain the safety rules.
+- Be concise, educational, and honest about uncertainty.`;
+
+app.post('/api/sage', async (req, res) => {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const question = (req.body && typeof req.body.question === 'string') ? req.body.question.trim() : '';
+  const context = (req.body && req.body.context && typeof req.body.context === 'object') ? req.body.context : {};
+
+  if (!question) return res.status(400).json({ error: 'Missing question' });
+  if (question.length > 500) return res.status(400).json({ error: 'Question too long (max 500 chars)' });
+
+  if (!apiKey) {
+    return res.json({
+      answer: null,
+      configured: false,
+      message: 'AI Co-Pilot is off. Add ANTHROPIC_API_KEY to your .env to enable Sage live Q&A. The deterministic dashboard works fully without it.'
+    });
+  }
+
+  try {
+    const userContent = `Live dashboard context (read-only):\n${JSON.stringify(context)}\n\nUser question: ${question}`;
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        system: SAGE_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userContent }]
+      })
+    });
+    if (!r.ok) return res.status(502).json({ error: 'Sage upstream error', status: r.status });
+    const data = await r.json();
+    const answer = Array.isArray(data.content) ? data.content.map(b => b.text || '').join('').trim() : '';
+    return res.json({ answer, configured: true });
+  } catch (e) {
+    return res.status(502).json({ error: 'Sage request failed' });
   }
 });
 

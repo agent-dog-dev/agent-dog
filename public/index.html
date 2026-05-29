@@ -388,6 +388,27 @@ body{
 .sage-response strong {
   color: #c4b5fd;
 }
+.sage-ask-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.sage-input {
+  flex: 1; background: rgba(10,10,15,0.8);
+  border: 1px solid rgba(139,92,246,0.4); color: #e2e8f0;
+  padding: 9px 12px; border-radius: 8px;
+  font-family: inherit; font-size: 0.85rem;
+}
+.sage-input:focus { outline: none; border-color: rgba(139,92,246,0.8); }
+.sage-ask-btn {
+  background: rgba(139,92,246,0.4); border: 1px solid rgba(139,92,246,0.7);
+  color: #fff; padding: 9px 18px; border-radius: 8px; cursor: pointer;
+  font-family: inherit; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+}
+.sage-ask-btn:hover { background: rgba(139,92,246,0.6); }
+.sage-ask-btn:disabled { opacity: 0.5; cursor: wait; }
+.sage-llm-answer { white-space: pre-wrap; line-height: 1.6; color: #e2e8f0; font-size: 0.9rem; }
+.sage-disclaimer {
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(139,92,246,0.2);
+  color: #f4b942; font-size: 0.8rem;
+}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -558,6 +579,10 @@ body{
         <button class="sage-question" data-q="paper">What is paper trading?</button>
         <button class="sage-question" data-q="safe">Is Agent DOG safe?</button>
         <button class="sage-question" data-q="dog">What is $DOG?</button>
+      </div>
+      <div class="sage-ask-row">
+        <input type="text" id="sage-input" class="sage-input" placeholder="Ask Sage anything…" maxlength="500" autocomplete="off">
+        <button class="sage-ask-btn" id="sage-ask-btn">Ask</button>
       </div>
       <div class="sage-answer" id="sage-answer">
         <div class="sage-placeholder">
@@ -1079,6 +1104,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// ===== SAGE 🦉 Ask Anything — optional AI co-pilot (advisory only, never executes) =====
+(function(){
+  const input = document.getElementById('sage-input');
+  const btn = document.getElementById('sage-ask-btn');
+  const answerDiv = document.getElementById('sage-answer');
+  if (!input || !btn || !answerDiv) return;
+
+  async function ask() {
+    const q = input.value.trim();
+    if (!q) return;
+    btn.disabled = true;
+    answerDiv.innerHTML = '<div class="sage-response"><p>🦉 Sage is thinking…</p></div>';
+    try {
+      const ctx = (typeof getSageContext === 'function') ? getSageContext() : {};
+      const r = await fetch('/api/sage', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ question: q, context: ctx })
+      });
+      const data = await r.json();
+      const wrap = document.createElement('div');
+      wrap.className = 'sage-response';
+      if (data && data.answer) {
+        const ans = document.createElement('div');
+        ans.className = 'sage-llm-answer';
+        ans.textContent = data.answer;
+        wrap.appendChild(ans);
+        const disc = document.createElement('p');
+        disc.className = 'sage-disclaimer';
+        disc.textContent = '💡 Advisory only — Sage never executes. You confirm every action (paper-only).';
+        wrap.appendChild(disc);
+      } else {
+        const m = document.createElement('p');
+        m.textContent = (data && data.message) ? data.message : 'Sage is unavailable right now.';
+        wrap.appendChild(m);
+      }
+      answerDiv.innerHTML = '';
+      answerDiv.appendChild(wrap);
+    } catch (e) {
+      answerDiv.innerHTML = '<div class="sage-response"><p>Sage is unavailable right now.</p></div>';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', ask);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ask(); });
+})();
 
 </script>
 </body>
