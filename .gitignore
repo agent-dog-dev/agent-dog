@@ -42,3 +42,7 @@ kraken-cli-*.sha256
 kraken_assetpairs.json
 kraken_releases.json
 *_ticker.json
+
+# Internal working docs (NOT for public submission repo)
+docs/KRAKEN_AGENT_ZERO_RULES.md
+docs/VIDEO_V2_SCRIPT.md
