@@ -136,6 +136,20 @@ Autonomy can be added later if the user wants it, with their own keys, on their 
 
 ---
 
+## 🧭 Design Philosophy
+
+We don't optimize for profit. We optimize for **not losing your sats**.
+
+- **Deterministic over magic** — the Compass score is plain math you can audit, not an LLM's guess.
+- **One human in control** — every action waits for your `--confirm`. The pack prepares; you decide.
+- **Refuse first** — Agent DOG actively says NO to weak setups (see the Decision Log). Most bots only know how to say yes.
+- **Paper before real** — practice with virtual sats until you trust the pack. Live trading is off at the code level.
+- **Show the work** — Pack Index breakdown, decision factors, agent consensus: nothing is hidden.
+
+> They built a bot that trades for you. We built a pack that answers to you.
+
+---
+
 ## ⚡ Quick Demo
 
 ### 30 seconds with Claude Code
