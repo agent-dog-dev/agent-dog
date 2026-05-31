@@ -418,6 +418,13 @@ body{
 .cons-label { color: #4ade80; font-weight: 800; font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .cons-step { color: #c9c9d6; }
 .cons-human { color: #8f8fa3; font-style: italic; }
+/* Multi-Timeframe Trend (Idea 7) */
+.mtf-note { font-size: 10px; color: #6c6c80; font-weight: 400; margin-left: 8px; text-transform: none; letter-spacing: 0; }
+.mtf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+.mtf-cell { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 14px; text-align: center; }
+.mtf-tf { font-size: 11px; color: #8f8fa3; font-family: 'JetBrains Mono', ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; }
+.mtf-arrow { font-size: 28px; font-weight: 800; margin: 6px 0 2px; line-height: 1; color: #6c6c80; }
+.mtf-pct { font-size: 13px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; color: #8f8fa3; }
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -576,6 +583,15 @@ body{
         <div class="pulse-cell"><b id="pulse-vol">—</b><span>Vol Impulse</span></div>
       </div>
       <div class="last-update" style="font-size:9px;color:#6c6c80;text-align:right;margin-top:8px;font-family:'JetBrains Mono',monospace">Last update: <span class="last-update-time" id="pulse-last-update">--:--:--</span></div>
+    </section>
+
+    <section class="card mtf-card">
+      <div class="ct">🕒 Multi-Timeframe Trend <span class="mtf-note">informational · does not change the deterministic decision</span></div>
+      <div class="mtf-grid" id="mtf-grid">
+        <div class="mtf-cell"><div class="mtf-tf">15m</div><div class="mtf-arrow" data-tf="15m">—</div><div class="mtf-pct" data-tf="15m">--</div></div>
+        <div class="mtf-cell"><div class="mtf-tf">1h</div><div class="mtf-arrow" data-tf="1h">—</div><div class="mtf-pct" data-tf="1h">--</div></div>
+        <div class="mtf-cell"><div class="mtf-tf">4h</div><div class="mtf-arrow" data-tf="4h">—</div><div class="mtf-pct" data-tf="4h">--</div></div>
+      </div>
     </section>
 
     <section class="panel sage-panel" id="sage-section">
@@ -1193,6 +1209,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btn.addEventListener('click', ask);
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ask(); });
+})();
+
+// ===== Multi-Timeframe Trend (Idea 7) — informational, read-only =====
+(function(){
+  async function loadMtf(){
+    try {
+      const r = await fetch('/api/dog/mtf');
+      if(!r.ok) return;
+      const data = await r.json();
+      (data.timeframes||[]).forEach(t=>{
+        const arrow = document.querySelector('.mtf-arrow[data-tf="'+t.tf+'"]');
+        const pct = document.querySelector('.mtf-pct[data-tf="'+t.tf+'"]');
+        if(!arrow||!pct) return;
+        const sym = t.trend==='up'?'↑':t.trend==='down'?'↓':t.trend==='flat'?'→':'·';
+        const col = t.trend==='up'?'#4ade80':t.trend==='down'?'#f87171':t.trend==='flat'?'#f4b942':'#6c6c80';
+        arrow.textContent = sym; arrow.style.color = col;
+        pct.textContent = (t.changePct>0?'+':'')+t.changePct+'%'; pct.style.color = col;
+      });
+    } catch(e){}
+  }
+  loadMtf();
+  setInterval(loadMtf, 30000);
 })();
 
 </script>

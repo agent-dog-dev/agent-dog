@@ -14,6 +14,7 @@ import { paperState } from './state.js';
 import { getBtcNetwork } from './btcNetwork.js';
 import { getDogTrades } from './dogTrades.js';
 import { getMarketPulse } from './marketPulse.js';
+import { getMultiTimeframe } from './multiTimeframe.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -158,6 +159,12 @@ app.get('/api/market-pulse', async (req, res) => {
   if (!data) {
     return res.status(503).json({ error: 'Kraken CLI unavailable' });
   }
+  res.json(data);
+});
+
+// GET /api/dog/mtf - Multi-timeframe trend (READ-ONLY, informational; does not affect scoring)
+app.get('/api/dog/mtf', async (req, res) => {
+  const data = await getMultiTimeframe();
   res.json(data);
 });
 
