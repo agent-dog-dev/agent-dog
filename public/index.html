@@ -419,12 +419,22 @@ body{
 .cons-step { color: #c9c9d6; }
 .cons-human { color: #8f8fa3; font-style: italic; }
 /* Multi-Timeframe Trend (Idea 7) */
+.mtf-card { margin: 18px 0; padding: 18px; }
 .mtf-note { font-size: 10px; color: #6c6c80; font-weight: 400; margin-left: 8px; text-transform: none; letter-spacing: 0; }
 .mtf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
 .mtf-cell { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 14px; text-align: center; }
 .mtf-tf { font-size: 11px; color: #8f8fa3; font-family: 'JetBrains Mono', ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; }
 .mtf-arrow { font-size: 28px; font-weight: 800; margin: 6px 0 2px; line-height: 1; color: #6c6c80; }
 .mtf-pct { font-size: 13px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; color: #8f8fa3; }
+/* Paper Track Record (Idea 5) */
+.pnl-card { margin: 18px 0; padding: 18px; }
+.pnl-wrap { display: grid; grid-template-columns: 1fr 1.3fr; gap: 18px; margin-top: 12px; align-items: center; }
+.pnl-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.pnl-stat { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 12px; text-align: center; }
+.pnl-val { font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono', ui-monospace, monospace; color: #f5f5fa; }
+.pnl-lbl { font-size: 10px; color: #8f8fa3; text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+.pnl-chart-wrap { height: 130px; position: relative; }
+@media (max-width: 980px){ .pnl-wrap{ grid-template-columns: 1fr; } }
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -591,6 +601,19 @@ body{
         <div class="mtf-cell"><div class="mtf-tf">15m</div><div class="mtf-arrow" data-tf="15m">—</div><div class="mtf-pct" data-tf="15m">--</div></div>
         <div class="mtf-cell"><div class="mtf-tf">1h</div><div class="mtf-arrow" data-tf="1h">—</div><div class="mtf-pct" data-tf="1h">--</div></div>
         <div class="mtf-cell"><div class="mtf-tf">4h</div><div class="mtf-arrow" data-tf="4h">—</div><div class="mtf-pct" data-tf="4h">--</div></div>
+      </div>
+    </section>
+
+    <section class="card pnl-card">
+      <div class="ct">💰 Paper Track Record <span class="mtf-note">realized P&amp;L from your paper trades · fees included, honest</span></div>
+      <div class="pnl-wrap">
+        <div class="pnl-stats">
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-realized">--</div><div class="pnl-lbl">Realized P&amp;L</div></div>
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-trades">--</div><div class="pnl-lbl">Trades</div></div>
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-open">--</div><div class="pnl-lbl">Open (DOG)</div></div>
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-fees">--</div><div class="pnl-lbl">Fees Paid</div></div>
+        </div>
+        <div class="pnl-chart-wrap"><canvas id="pnl-chart"></canvas></div>
       </div>
     </section>
 
@@ -1231,6 +1254,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   loadMtf();
   setInterval(loadMtf, 30000);
+})();
+
+// ===== Paper Track Record (Idea 5) — realized P&L from paper history =====
+(function(){
+  let pnlChart=null;
+  async function loadPnl(){
+    try {
+      const r=await fetch('/api/paper/history'); if(!r.ok) return;
+      const d=await r.json();
+      const set=(id,txt,col)=>{const e=document.getElementById(id); if(e){e.textContent=txt; if(col) e.style.color=col;}};
+      set('pnl-realized',(d.realized>=0?'+$':'−$')+Math.abs(d.realized||0).toFixed(2), d.realized>=0?'#4ade80':'#f87171');
+      set('pnl-trades', String(d.trades||0));
+      set('pnl-open', (d.openPosition||0).toLocaleString('en-US'));
+      set('pnl-fees', '$'+(d.totalFees||0).toFixed(2));
+      const canvas=document.getElementById('pnl-chart');
+      if(canvas && d.series && d.series.length){
+        const labels=d.series.map((s,i)=>'#'+(i+1));
+        const vals=d.series.map(s=>s.realized);
+        const up=vals[vals.length-1]>=0;
+        const ctx=canvas.getContext('2d');
+        if(pnlChart) pnlChart.destroy();
+        pnlChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{data:vals,borderColor:up?'#4ade80':'#f87171',backgroundColor:'rgba(124,58,237,0.08)',borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:up?'#4ade80':'#f87171',tension:0.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{callbacks:{label:(it)=>'Cumulative: '+(it.parsed.y>=0?'+$':'−$')+Math.abs(it.parsed.y).toFixed(2)}}},scales:{x:{display:false},y:{display:false}}}});
+      }
+    } catch(e){}
+  }
+  loadPnl();
+  setInterval(loadPnl, 15000);
 })();
 
 </script>

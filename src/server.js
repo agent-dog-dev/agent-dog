@@ -15,6 +15,7 @@ import { getBtcNetwork } from './btcNetwork.js';
 import { getDogTrades } from './dogTrades.js';
 import { getMarketPulse } from './marketPulse.js';
 import { getMultiTimeframe } from './multiTimeframe.js';
+import { getPaperPnl } from './paperPnl.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -166,6 +167,11 @@ app.get('/api/market-pulse', async (req, res) => {
 app.get('/api/dog/mtf', async (req, res) => {
   const data = await getMultiTimeframe();
   res.json(data);
+});
+
+// GET /api/paper/history - Realized P&L track record from paper trade history (READ-ONLY)
+app.get('/api/paper/history', (req, res) => {
+  res.json(getPaperPnl());
 });
 
 // GET /api/dog/history - OHLC history for interactive chart
