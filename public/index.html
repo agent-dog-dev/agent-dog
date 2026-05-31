@@ -112,13 +112,13 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .cell b{display:block;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:15px}
 .cell span{color:var(--muted);font-size:10px;text-transform:uppercase}
 .grid3{display:grid;grid-template-columns:600px 1fr;gap:12px;margin-bottom:12px}
-.risk{height:300px;position:relative}
+.risk{height:340px;position:relative}
 .guardmark{position:absolute;right:21px;top:9px;width:42px;height:42px;border-radius:11px;object-fit:cover;border:1px solid var(--line2);opacity:.82;filter:saturate(1.05) contrast(1.05)}
 .ritem{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:8px;background:rgba(255,255,255,.04);border-left:3px solid var(--purple2);border-radius:8px;padding:8px 10px;margin:7px 0;font-size:13px}
 .ritem .name{color:var(--muted)}
 .ritem b{font-family:"JetBrains Mono",ui-monospace,monospace}
 .warn{color:var(--gold)}
-.timeline{height:300px}
+.timeline{height:340px}
 .thead{display:flex;align-items:center;justify-content:space-between}
 .refresh{color:var(--muted);font-size:12px}
 .events{display:flex;flex-direction:column;gap:8px;margin-top:16px}
@@ -409,6 +409,15 @@ body{
   border-top: 1px solid rgba(139,92,246,0.2);
   color: #f4b942; font-size: 0.8rem;
 }
+/* Decision Log (B) */
+.decision-log { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 11px; line-height: 1.4; }
+.dl-label { color: #a78bfa; font-weight: 700; }
+.dl-fact { color: #d3d3de; background: rgba(124,58,237,.12); border: 1px solid rgba(124,58,237,.28); padding: 2px 8px; border-radius: 6px; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+/* Pack Consensus (C) */
+.consensus { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 7px 0 9px; font-size: 11px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.cons-label { color: #4ade80; font-weight: 800; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.cons-step { color: #c9c9d6; }
+.cons-human { color: #8f8fa3; font-style: italic; }
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -446,6 +455,7 @@ body{
         <div style="font:800 10px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Current Intent</div>
         <div id="current-intent" style="font-size:18px;font-weight:800;color:#f5f5fa">HOLD DOG — <span style="color:#8f8fa3;font-size:14px;font-weight:500">no autonomous execution</span></div>
         <div style="margin-top:8px;font-size:11px;color:#6c6c80">Waiting for human confirmation</div>
+        <div id="decision-log" class="decision-log"></div>
       </div>
     </section>
 
@@ -519,6 +529,7 @@ body{
       </div>
       <div class="card pad timeline">
         <div class="thead"><div class="ct" style="margin:0">📋 Agent Timeline</div><div class="refresh">● Auto-refresh: 5s</div></div>
+        <div id="pack-consensus" class="consensus"></div>
         <div class="events" id="events"><div class="ev"><span class="time">[ready]</span><span class="actor">BEACON</span><span class="text">DOGUSD market feed loaded from Kraken CLI.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">COMPASS</span><span class="text">Pack Index computed. Decision remains deterministic.</span></div><div class="ev"><span class="time">[safe]</span><span class="actor">ANCHOR</span><span class="text">Paper-only. Human confirmation required.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">HELM</span><span class="text">Paper command staged for human review.</span></div><div class="ev"><span class="time">[ready]</span><span class="actor">SAGE</span><span class="text">Educational FAQ ready. Ask anything.</span></div></div>
       </div>
     </section>
@@ -627,6 +638,29 @@ function render(s){
  $('pnl').textContent=(p.unrealizedPnl>=0?'+':'-')+'$'+Math.abs(p.unrealizedPnl).toFixed(4); $('pnl').style.color=p.unrealizedPnl>=0?'var(--green)':'var(--red)';
  $('total').textContent=p.totalTrades??0; $('orders').textContent=p.openOrders??0;
  $('volatility').textContent=sc.vo.toFixed(2)+'%'; $('riskspread').textContent=sc.sp.toFixed(2)+'%'; $('range').textContent=price(d.low)+' - '+price(d.high); $('risk').textContent=sc.risk>=75?'LOW':sc.risk>=55?'MODERATE':'ELEVATED';
+ // Decision Log (B) + Pack Consensus (C) — deterministic, computed from live scores
+ (function(){
+   const dStr=dec.decision||'HOLD', conf=dec.confidence??50;
+   const dl=document.getElementById('decision-log');
+   if(dl){
+     const facts=[
+       'confidence '+conf+'% '+(conf>=70?'≥ 70% ✓':'< 70% threshold'),
+       'risk '+sc.risk+'/100 '+(sc.risk>=75?'(low)':sc.risk>=55?'(moderate)':'(elevated)'),
+       'momentum '+sc.mom+'/100',
+       'volatility '+sc.vo.toFixed(1)+'%'
+     ];
+     dl.innerHTML='<span class="dl-label">Why '+dStr+'? Deterministic factors:</span>'+facts.map(f=>'<span class="dl-fact">'+f+'</span>').join('');
+   }
+   const cons=document.getElementById('pack-consensus');
+   if(cons){
+     const beaconOk=Number(d.last)>0, compassOk=dStr!=='RISK_OFF', go=(beaconOk?1:0)+(compassOk?1:0);
+     cons.innerHTML='<span class="cons-label">⛓ Pack Consensus '+go+'/3</span>'+
+       '<span class="cons-step">🔎 Beacon '+(beaconOk?'✓':'—')+'</span>'+
+       '<span class="cons-step">🧭 Compass '+(compassOk?'✓':'⚠')+'</span>'+
+       '<span class="cons-step">⚓ Anchor ⏸</span>'+
+       '<span class="cons-human">→ human steers</span>';
+   }
+ })();
  const logs=s.logs?.logs||[];
  if(Array.isArray(logs)&&logs.length){
    $('events').innerHTML=logs.slice(-3).map((x,i)=>`<div class="ev"><span class="time">[${x.time||'live'}]</span><span class="actor">${(x.actor||['BEACON','COMPASS','ANCHOR','HELM','SAGE'][i]||'PACK').toUpperCase()}</span><span class="text">${x.message||String(x).slice(0,90)}</span></div>`).join('');
