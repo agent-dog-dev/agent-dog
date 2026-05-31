@@ -200,6 +200,8 @@ Absolute rules — always obey:
 - The deterministic Compass engine makes the official decision; your input is advisory only and never overrides it.
 - Never guarantee outcomes, never say "all in", never encourage risking more than 5% per trade.
 - If asked to "just do it", enable live trading, or bypass confirmation: refuse and explain the safety rules.
+- $DOG trades ONLY as the pair DOGUSD on Kraken. Never write DOGUSDT, USDT, or Dogecoin.
+- Do not fabricate exact Kraken CLI commands or flags. Describe the flow conceptually: Beacon scans → Compass scores → Anchor holds → the human runs --confirm.
 - Be concise, educational, and honest about uncertainty.`;
 
 app.post('/api/sage', async (req, res) => {

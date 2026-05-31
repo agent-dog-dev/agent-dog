@@ -932,13 +932,16 @@ function getSageContext() {
     return isNaN(num) ? null : num;
   }
 
+  const s = window.__packScores;
+  const pidxText = readText('#pack-index');           // e.g. "84/100"
+  const pidxFb = pidxText ? parseInt(pidxText, 10) : NaN;
   return {
-    packIndex: readNumber('#pack-index'),
-    packState: readText('#pack-state'),
-    liquidity: readNumber('#v-liq'),
-    momentum: readNumber('#v-mom'),
-    risk: readNumber('#v-risk'),
-    readiness: readNumber('#v-ready'),
+    packIndex: (s && s.idx != null) ? s.idx : (isNaN(pidxFb) ? null : pidxFb),
+    packState: (s && s.state) ? s.state : readText('#pack-state'),
+    liquidity: (s && s.liq != null) ? s.liq : readNumber('#v-liq'),
+    momentum: (s && s.mom != null) ? s.mom : readNumber('#v-mom'),
+    risk: (s && s.risk != null) ? s.risk : readNumber('#v-risk'),
+    readiness: (s && s.ready != null) ? s.ready : readNumber('#v-ready'),
     decision: readText('#decision') || 'HOLD',
     confidence: readNumber('#confidence'),
     volatility: readNumber('#volatility')
