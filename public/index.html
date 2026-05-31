@@ -1021,7 +1021,12 @@ function getSageContext() {
     readiness: (s && s.ready != null) ? s.ready : readNumber('#v-ready'),
     decision: readText('#decision') || 'HOLD',
     confidence: readNumber('#confidence'),
-    volatility: readNumber('#volatility')
+    volatility: readNumber('#volatility'),
+    multiTimeframe: {
+      '15m': readText('.mtf-pct[data-tf="15m"]'),
+      '1h': readText('.mtf-pct[data-tf="1h"]'),
+      '4h': readText('.mtf-pct[data-tf="4h"]')
+    }
   };
 }
 
