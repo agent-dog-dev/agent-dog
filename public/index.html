@@ -463,6 +463,9 @@ body{
 .edit-layout-btn{ margin-left:12px; padding:6px 12px; font:700 11px 'JetBrains Mono',ui-monospace,monospace; letter-spacing:.04em; color:#a78bfa; background:rgba(167,139,250,.12); border:1px solid rgba(167,139,250,.45); border-radius:7px; cursor:pointer; transition:all .2s; }
 .edit-layout-btn:hover{ background:rgba(167,139,250,.24); }
 .edit-layout-btn.active{ color:#0e0e16; background:#a78bfa; border-color:#a78bfa; }
+.reset-layout-btn{ display:none; margin-left:8px; padding:6px 12px; font:700 11px 'JetBrains Mono',ui-monospace,monospace; color:#f4b942; background:rgba(244,185,66,.12); border:1px solid rgba(244,185,66,.45); border-radius:7px; cursor:pointer; }
+.reset-layout-btn:hover{ background:rgba(244,185,66,.24); }
+body.editing .reset-layout-btn{ display:inline-flex; align-items:center; }
 .mod-hide{ display:none; position:absolute; top:8px; right:8px; z-index:40; width:24px; height:24px; border-radius:7px; background:rgba(248,113,113,.92); color:#fff; border:none; cursor:pointer; font:900 15px/1 system-ui; align-items:center; justify-content:center; }
 body.editing [data-mod]{ position:relative; outline:2px dashed rgba(167,139,250,.55); outline-offset:-3px; cursor:grab; }
 body.editing [data-mod]:active{ cursor:grabbing; }
@@ -1413,6 +1416,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const containerSels=['.grid2','.grid3','.intel-row'];
   const containers=containerSels.map(s=>({sel:s,el:document.querySelector(s)})).filter(c=>c.el);
 
+  // Capture default order (for reset)
+  const defaultOrder={};
+  containers.forEach(c=>{ defaultOrder[c.sel]=Array.prototype.slice.call(c.el.children).map(x=>x.dataset.mod).filter(Boolean); });
+
   // Restore saved order
   const order=getOrder();
   containers.forEach(c=>{ const ids=order[c.sel]; if(Array.isArray(ids)){ ids.forEach(id=>{ const el=c.el.querySelector('[data-mod="'+id+'"]'); if(el) c.el.appendChild(el); }); } });
@@ -1443,6 +1450,16 @@ document.addEventListener('DOMContentLoaded', () => {
   btn.addEventListener('click',()=>{ editing=!editing; document.body.classList.toggle('editing',editing); sortables.forEach(s=>s.option('disabled',!editing)); btn.textContent=editing?'✓ Done':'✏️ Edit layout'; btn.classList.toggle('active',editing); if(editing) tray.scrollIntoView({behavior:'smooth',block:'nearest'}); });
   const host=document.querySelector('.badges')||document.querySelector('.topbar-meta')||document.querySelector('.top');
   if(host) host.appendChild(btn);
+
+  // Reset to default layout (visible in edit mode)
+  const rbtn=document.createElement('button'); rbtn.type='button'; rbtn.className='reset-layout-btn'; rbtn.textContent='↺ Reset';
+  rbtn.addEventListener('click',()=>{
+    if(!window.confirm('Reset the dashboard to its default layout? Your customizations will be cleared.')) return;
+    Object.keys(modEls).forEach(id=>{ modEls[id].style.display=''; });
+    containers.forEach(c=>{ (defaultOrder[c.sel]||[]).forEach(id=>{ const el=c.el.querySelector('[data-mod="'+id+'"]'); if(el) c.el.appendChild(el); }); });
+    localStorage.removeItem(LS_ORDER); localStorage.removeItem(LS_HIDDEN); renderTray();
+  });
+  if(host) host.appendChild(rbtn);
 })();
 
 </script>
