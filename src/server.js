@@ -16,6 +16,7 @@ import { getDogTrades } from './dogTrades.js';
 import { getMarketPulse } from './marketPulse.js';
 import { getMultiTimeframe } from './multiTimeframe.js';
 import { getPaperPnl } from './paperPnl.js';
+import { getPerps } from './perps.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -172,6 +173,11 @@ app.get('/api/dog/mtf', async (req, res) => {
 // GET /api/paper/history - Realized P&L track record from paper trade history (READ-ONLY)
 app.get('/api/paper/history', (req, res) => {
   res.json(getPaperPnl());
+});
+
+// GET /api/dog/perps - PF_DOGUSD perpetual market data (READ-ONLY, informational; no orders)
+app.get('/api/dog/perps', (req, res) => {
+  res.json(getPerps());
 });
 
 // GET /api/dog/history - OHLC history for interactive chart
