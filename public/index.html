@@ -58,7 +58,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .welcome .list{margin-top:13px;color:#e5dcff;font-size:13px;line-height:1.7}
 .welcome .pill{position:absolute;left:22px;bottom:18px;z-index:2}
 .pill{display:inline-flex;align-items:center;justify-content:center;padding:9px 15px;border-radius:999px;background:rgba(124,58,237,.24);border:1px solid rgba(167,139,250,.25);color:#c7b3ff;font-size:12px;font-weight:850}
-.marketHero{height:430px;position:relative;padding:22px 28px;overflow:hidden}
+.marketHero{height:490px;position:relative;padding:22px 28px;overflow:hidden}
 .marketHero:after{
  content:"";display:none;
  background:linear-gradient(180deg,rgba(124,58,237,.36),rgba(124,58,237,0));
@@ -66,7 +66,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 }
 .label{font:850 12px "JetBrains Mono",ui-monospace,monospace;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;gap:10px;align-items:center;position:relative;z-index:5}
 .dot{width:6px;height:6px;background:var(--purple2);box-shadow:0 0 12px var(--purple2);border-radius:50%}
-.price{position:relative;z-index:6;font-size:28px;font-weight:950;letter-spacing:-.06em;margin-top:6px}
+.price{position:relative;z-index:6;font-size:22px;font-weight:950;letter-spacing:-.06em;margin-top:6px}
 .chg{position:relative;z-index:6;margin-top:12px;display:inline-flex;align-items:center;gap:8px;color:var(--green);background:rgba(74,222,128,.12);border-radius:10px;padding:8px 12px;font:900 16px "JetBrains Mono",ui-monospace,monospace}
 
 /* FIX: one combined transparent asset instead of two badly positioned overlays */
@@ -90,7 +90,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .pack .big{font-size:58px;font-weight:950;letter-spacing:-.06em;line-height:.95;color:#fff}
 .pack .state{color:var(--green);font:900 13px "JetBrains Mono",ui-monospace,monospace;margin-top:8px}
 .pack .text{font-size:14px;color:var(--muted);line-height:1.35;margin-top:12px;max-width:270px}
-.packbars{display:grid;gap:7px;margin-top:4px}
+.packbars{display:grid;gap:7px;margin-top:auto}
 .barrow{display:grid;grid-template-columns:90px 1fr 34px;gap:8px;align-items:center;color:var(--muted);font-size:13px}
 .bar{height:7px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
 .bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--purple),var(--green))}
@@ -138,7 +138,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 
 /* Market Intelligence Add-on Styles */
 .intel-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
-.btc-network{min-height:320px;padding:18px}
+.btc-network{min-height:320px;padding:18px;display:flex;flex-direction:column}
 .dog-trades{display:flex;flex-direction:column;min-height:320px;max-height:420px;padding:18px}
 .btc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
 .btc-cell{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
@@ -147,7 +147,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .btc-cell .fee-low{color:var(--green)}
 .btc-cell .fee-med{color:var(--gold)}
 .btc-cell .fee-high{color:var(--red)}
-.btc-blocks{display:flex;gap:8px;margin-top:12px;overflow-x:auto}
+.btc-blocks{display:flex;gap:8px;margin-top:auto;overflow-x:auto}
 .btc-block{flex:1;min-width:90px;background:rgba(247,147,26,.08);border:1px solid rgba(247,147,26,.25);border-radius:10px;padding:10px;text-align:center;font-size:11px}
 .btc-block b{display:block;font-size:13px;color:var(--btc)}
 .dog-trades-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1;font-family:'JetBrains Mono',monospace;padding-right:6px;margin-top:8px}
@@ -227,7 +227,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 }
 .packbars{
   gap:6px !important;
-  margin-top:8px !important;
+  margin-top:auto !important;
 }
 .barrow{
   font-size:12px !important;
@@ -455,7 +455,7 @@ body{
 .section-head .lbl { font: 800 12px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; color: #9a9ab0; }
 .section-head .sub { font-size: 11px; color: #6c6c80; font-weight: 500; }
 /* Hero TradingView chart + Open full */
-.hero-chart { position: relative; height: 290px; margin-top: 10px; border-radius: 10px; overflow: hidden; background: rgba(8,8,14,0.45); }
+.hero-chart { position: relative; height: 360px; margin-top: 10px; border-radius: 10px; overflow: hidden; background: rgba(8,8,14,0.45); }
 .tv-openfull { position: absolute; top: 16px; right: 18px; z-index: 20; font: 700 11px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .04em; color: #a78bfa; text-decoration: none; padding: 4px 10px; border: 1px solid rgba(167,139,250,.4); border-radius: 6px; background: rgba(167,139,250,.10); transition: background .2s; }
 .tv-openfull:hover { background: rgba(167,139,250,.24); }
 
@@ -484,14 +484,14 @@ body{
           </div>
           <div class="topbar-meta" style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap"><div style="display:inline-flex;align-items:center;gap:7px;padding:4px 10px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500"><span style="width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;display:inline-block"></span><span>Pack Active — <span style="color:#4ade80;font-weight:600">Reading market</span></span></div><div id="utc-clock" style="display:inline-flex;align-items:center;gap:7px;padding:4px 10px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#60a5fa;font-weight:700">UTC</span><span id="utc-time" style="color:#f5f5fa;font-weight:600">--:--:--</span></div><button id="btn-refresh-now" type="button" onclick="forceRefreshAll()" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(96,165,250,.10);border:1px solid rgba(96,165,250,.35);border-radius:6px;font-size:10px;color:#60a5fa;font-weight:600;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.05em" onmouseover="this.style.background='rgba(96,165,250,.20)'" onmouseout="this.style.background='rgba(96,165,250,.10)'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"></path></svg>Refresh Now</button><button id="btn-auto-toggle" type="button" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(74,222,128,.10);border:1px solid rgba(74,222,128,.35);border-radius:6px;font-size:10px;color:#4ade80;font-weight:600;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.05em" onmouseover="this.style.background='rgba(74,222,128,.20)'" onmouseout="this.style.background='rgba(74,222,128,.10)'"><span id="auto-toggle-dot" style="width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block"></span><span id="auto-toggle-text">Auto: ON</span></button><div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(244,185,66,.08);border:1px solid rgba(244,185,66,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#f4b942;font-weight:700">Cycles</span><span id="cycles-count" style="color:#f5f5fa;font-weight:600">0</span></div><div id="last-decision-meta" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#a78bfa;font-weight:700">Last</span><span id="last-decision-text" style="color:#f5f5fa;font-weight:600">—</span></div><div id="regime-meta" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#2dd4bf;font-weight:700">Regime</span><span id="market-regime" style="color:#f5f5fa;font-weight:600">—</span></div></div></div>
       </div>
-      <div class="badges"><span class="badge cli">✓ Kraken CLI</span><span class="badge read">🔒 Read-Only Mode</span><span class="badge dogusd">DOGUSD</span><img src="/assets/dog_kraken_purple.png" alt="DOG" style="height:54px;width:54px;object-fit:cover;border-radius:10px;margin-left:12px;border:1px solid rgba(167,139,250,.4)"></div>
+      <div class="badges"><span class="badge cli">✓ Kraken CLI</span><span class="badge read">🔒 Read-Only Mode</span><span class="badge dogusd">DOGUSD</span></div>
     </div>
 
     <!-- Agent Cast Section removed (rebrand: Agent DOG / Beacon · Compass · Anchor · Helm) -->
 
     <!-- Current Intent -->
     <section style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:18px">
-      <div class="card" style="padding:16px;background:linear-gradient(90deg,rgba(124,58,237,.08),rgba(124,58,237,.03));border-left:3px solid #a78bfa">
+      <div class="card" style="padding:16px 170px 16px 16px;background:linear-gradient(90deg,rgba(124,58,237,.08),rgba(124,58,237,.03));border-left:3px solid #a78bfa;position:relative;overflow:hidden"><img src="/assets/dog_kraken_purple.png" alt="DOG" style="position:absolute;right:22px;top:50%;transform:translateY(-50%);height:120px;width:120px;object-fit:cover;border-radius:14px;border:1px solid rgba(167,139,250,.45)">
         <div style="font:800 10px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Current Intent</div>
         <div id="current-intent" style="font-size:18px;font-weight:800;color:#f5f5fa">HOLD DOG — <span style="color:#8f8fa3;font-size:14px;font-weight:500">no autonomous execution</span></div>
         <div style="margin-top:8px;font-size:11px;color:#6c6c80">Waiting for human confirmation</div>
