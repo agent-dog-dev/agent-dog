@@ -58,7 +58,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .welcome .list{margin-top:13px;color:#e5dcff;font-size:13px;line-height:1.7}
 .welcome .pill{position:absolute;left:22px;bottom:18px;z-index:2}
 .pill{display:inline-flex;align-items:center;justify-content:center;padding:9px 15px;border-radius:999px;background:rgba(124,58,237,.24);border:1px solid rgba(167,139,250,.25);color:#c7b3ff;font-size:12px;font-weight:850}
-.marketHero{height:490px;position:relative;padding:22px 28px;overflow:hidden}
+.marketHero{height:525px;position:relative;padding:22px 28px;overflow:hidden}
 .marketHero:after{
  content:"";display:none;
  background:linear-gradient(180deg,rgba(124,58,237,.36),rgba(124,58,237,0));
@@ -67,7 +67,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .label{font:850 12px "JetBrains Mono",ui-monospace,monospace;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;gap:10px;align-items:center;position:relative;z-index:5}
 .dot{width:6px;height:6px;background:var(--purple2);box-shadow:0 0 12px var(--purple2);border-radius:50%}
 .price{position:relative;z-index:6;font-size:22px;font-weight:950;letter-spacing:-.06em;margin-top:6px}
-.chg{position:relative;z-index:6;margin-top:12px;display:inline-flex;align-items:center;gap:8px;color:var(--green);background:rgba(74,222,128,.12);border-radius:10px;padding:8px 12px;font:900 16px "JetBrains Mono",ui-monospace,monospace}
+.chg{position:relative;z-index:6;margin-top:8px;display:inline-flex;align-items:center;gap:6px;color:var(--green);background:rgba(74,222,128,.12);border-radius:8px;padding:5px 9px;font:900 12px "JetBrains Mono",ui-monospace,monospace}
 
 /* FIX: one combined transparent asset instead of two badly positioned overlays */
 .dogmark{
@@ -138,16 +138,16 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 
 /* Market Intelligence Add-on Styles */
 .intel-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
-.btc-network{min-height:320px;padding:18px;display:flex;flex-direction:column}
+.btc-network{min-height:320px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}
 .dog-trades{display:flex;flex-direction:column;min-height:320px;max-height:420px;padding:18px}
 .btc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
-.btc-cell{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.btc-cell{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:18px 10px;text-align:center}
 .btc-cell b{display:block;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:16px}
 .btc-cell span{color:var(--muted);font-size:10px;text-transform:uppercase}
 .btc-cell .fee-low{color:var(--green)}
 .btc-cell .fee-med{color:var(--gold)}
 .btc-cell .fee-high{color:var(--red)}
-.btc-blocks{display:flex;gap:8px;margin-top:auto;overflow-x:auto}
+.btc-blocks{display:flex;gap:8px;margin-top:0;overflow-x:auto}
 .btc-block{flex:1;min-width:90px;background:rgba(247,147,26,.08);border:1px solid rgba(247,147,26,.25);border-radius:10px;padding:10px;text-align:center;font-size:11px}
 .btc-block b{display:block;font-size:13px;color:var(--btc)}
 .dog-trades-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1;font-family:'JetBrains Mono',monospace;padding-right:6px;margin-top:8px}
@@ -208,7 +208,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 
 /* PACK INDEX VISIBILITY FIX */
 .pack{
-  height:270px !important;
+  min-height:270px !important;
   padding:18px 18px 16px !important;
   overflow:hidden !important;
 }
@@ -455,7 +455,7 @@ body{
 .section-head .lbl { font: 800 12px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; color: #9a9ab0; }
 .section-head .sub { font-size: 11px; color: #6c6c80; font-weight: 500; }
 /* Hero TradingView chart + Open full */
-.hero-chart { position: relative; height: 360px; margin-top: 10px; border-radius: 10px; overflow: hidden; background: rgba(8,8,14,0.45); }
+.hero-chart { position: relative; height: 400px; margin-top: 8px; border-radius: 10px; overflow: hidden; background: rgba(8,8,14,0.45); }
 .tv-openfull { position: absolute; top: 16px; right: 18px; z-index: 20; font: 700 11px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .04em; color: #a78bfa; text-decoration: none; padding: 4px 10px; border: 1px solid rgba(167,139,250,.4); border-radius: 6px; background: rgba(167,139,250,.10); transition: background .2s; }
 .tv-openfull:hover { background: rgba(167,139,250,.24); }
 
@@ -491,7 +491,7 @@ body{
 
     <!-- Current Intent -->
     <section style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:18px">
-      <div class="card" style="padding:16px 170px 16px 16px;background:linear-gradient(90deg,rgba(124,58,237,.08),rgba(124,58,237,.03));border-left:3px solid #a78bfa;position:relative;overflow:hidden"><img src="/assets/dog_kraken_purple.png" alt="DOG" style="position:absolute;right:22px;top:50%;transform:translateY(-50%);height:120px;width:120px;object-fit:cover;border-radius:14px;border:1px solid rgba(167,139,250,.45)">
+      <div class="card" style="padding:18px 270px 18px 16px;background:linear-gradient(90deg,rgba(124,58,237,.08),rgba(124,58,237,.03));border-left:3px solid #a78bfa;position:relative;overflow:hidden;min-height:160px"><img src="/assets/dog_kraken_purple.png" alt="DOG" style="position:absolute;right:18px;top:50%;transform:translateY(-50%);height:160px;width:230px;object-fit:cover;border-radius:14px;border:1px solid rgba(167,139,250,.45)">
         <div style="font:800 10px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Current Intent</div>
         <div id="current-intent" style="font-size:18px;font-weight:800;color:#f5f5fa">HOLD DOG — <span style="color:#8f8fa3;font-size:14px;font-weight:500">no autonomous execution</span></div>
         <div style="margin-top:8px;font-size:11px;color:#6c6c80">Waiting for human confirmation</div>
