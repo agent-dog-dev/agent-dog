@@ -459,8 +459,23 @@ body{
 .tv-openfull { position: absolute; top: 16px; right: 18px; z-index: 20; font: 700 11px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .04em; color: #a78bfa; text-decoration: none; padding: 4px 10px; border: 1px solid rgba(167,139,250,.4); border-radius: 6px; background: rgba(167,139,250,.10); transition: background .2s; }
 .tv-openfull:hover { background: rgba(167,139,250,.24); }
 
+/* ===== Customizable layout (opt-in edit mode) ===== */
+.edit-layout-btn{ margin-left:12px; padding:6px 12px; font:700 11px 'JetBrains Mono',ui-monospace,monospace; letter-spacing:.04em; color:#a78bfa; background:rgba(167,139,250,.12); border:1px solid rgba(167,139,250,.45); border-radius:7px; cursor:pointer; transition:all .2s; }
+.edit-layout-btn:hover{ background:rgba(167,139,250,.24); }
+.edit-layout-btn.active{ color:#0e0e16; background:#a78bfa; border-color:#a78bfa; }
+.mod-hide{ display:none; position:absolute; top:8px; right:8px; z-index:40; width:24px; height:24px; border-radius:7px; background:rgba(248,113,113,.92); color:#fff; border:none; cursor:pointer; font:900 15px/1 system-ui; align-items:center; justify-content:center; }
+body.editing [data-mod]{ position:relative; outline:2px dashed rgba(167,139,250,.55); outline-offset:-3px; cursor:grab; }
+body.editing [data-mod]:active{ cursor:grabbing; }
+body.editing .mod-hide{ display:flex; }
+.sortable-ghost{ opacity:.4; }
+.edit-tray{ display:none; }
+body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 14px; padding:12px 14px; background:rgba(167,139,250,.08); border:1px dashed rgba(167,139,250,.4); border-radius:10px; }
+.tray-lbl{ font:700 11px 'JetBrains Mono',ui-monospace,monospace; color:#a78bfa; letter-spacing:.05em; }
+.tray-chip{ padding:5px 10px; font:700 11px 'JetBrains Mono',ui-monospace,monospace; color:#4ade80; background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.35); border-radius:6px; cursor:pointer; }
+.tray-chip:hover{ background:rgba(74,222,128,.22); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -1365,6 +1380,69 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   loadPerps();
   setInterval(loadPerps, 30000);
+})();
+
+// ===== Customizable layout — drag-reorder (within rows) + show/hide, saved per browser =====
+(function(){
+  const LS_ORDER='agentdog_layout_order_v1', LS_HIDDEN='agentdog_layout_hidden_v1';
+  const MODULES=[
+    {id:'pack-index',label:'Pack Index',sel:'#pack-index',closest:true},
+    {id:'market-data',label:'Market Data',sel:'#bid',closest:true},
+    {id:'decision',label:'Decision Engine',sel:'#ring',closest:true},
+    {id:'portfolio',label:'Paper Portfolio',sel:'#current',closest:true},
+    {id:'risk',label:'Risk Analysis',sel:'.risk'},
+    {id:'timeline',label:'Agent Timeline',sel:'.timeline'},
+    {id:'btc',label:'BTC Network',sel:'.btc-network'},
+    {id:'trades',label:'Live Trades',sel:'.dog-trades'},
+    {id:'market-pulse',label:'Market Pulse',sel:'.market-pulse'},
+    {id:'mtf',label:'Multi-Timeframe',sel:'.mtf-card'},
+    {id:'perps',label:'Perpetual',sel:'.perps-card'},
+    {id:'pnl',label:'Track Record',sel:'.pnl-card'},
+    {id:'sage',label:'Ask Sage',sel:'#sage-section'},
+    {id:'rules',label:'Safety Rules',sel:'.rules-card'}
+  ];
+  const modEls={}, modLabel={};
+  MODULES.forEach(m=>{ const base=document.querySelector(m.sel); if(!base) return; const el=m.closest?base.closest('.card'):base; if(!el) return; el.dataset.mod=m.id; modEls[m.id]=el; modLabel[m.id]=m.label; });
+
+  const getJSON=(k,d)=>{ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } };
+  const getHidden=()=>getJSON(LS_HIDDEN,[]);
+  const setHidden=(a)=>localStorage.setItem(LS_HIDDEN, JSON.stringify(a));
+  const getOrder=()=>getJSON(LS_ORDER,{});
+  const setOrder=(o)=>localStorage.setItem(LS_ORDER, JSON.stringify(o));
+
+  const containerSels=['.grid2','.grid3','.intel-row'];
+  const containers=containerSels.map(s=>({sel:s,el:document.querySelector(s)})).filter(c=>c.el);
+
+  // Restore saved order
+  const order=getOrder();
+  containers.forEach(c=>{ const ids=order[c.sel]; if(Array.isArray(ids)){ ids.forEach(id=>{ const el=c.el.querySelector('[data-mod="'+id+'"]'); if(el) c.el.appendChild(el); }); } });
+  // Restore hidden
+  getHidden().forEach(id=>{ if(modEls[id]) modEls[id].style.display='none'; });
+
+  // Hide buttons on each module
+  Object.keys(modEls).forEach(id=>{ const el=modEls[id]; const b=document.createElement('button'); b.className='mod-hide'; b.type='button'; b.textContent='×'; b.title='Hide module'; b.addEventListener('click',(e)=>{ e.stopPropagation(); e.preventDefault(); hideMod(id); }); el.appendChild(b); });
+
+  // Restore tray
+  const tray=document.createElement('div'); tray.className='edit-tray';
+  const main=document.querySelector('main')||document.body;
+  main.insertBefore(tray, main.firstChild);
+  function renderTray(){ const h=getHidden(); tray.innerHTML=''; const lbl=document.createElement('span'); lbl.className='tray-lbl'; lbl.textContent=h.length?'Hidden — click to restore:':'Drag cards to reorder · click ✕ to hide a module'; tray.appendChild(lbl); h.forEach(id=>{ const c=document.createElement('button'); c.type='button'; c.className='tray-chip'; c.textContent='+ '+(modLabel[id]||id); c.addEventListener('click',()=>showMod(id)); tray.appendChild(c); }); }
+  function hideMod(id){ if(modEls[id]) modEls[id].style.display='none'; const h=getHidden(); if(h.indexOf(id)<0){ h.push(id); setHidden(h); } renderTray(); }
+  function showMod(id){ if(modEls[id]) modEls[id].style.display=''; setHidden(getHidden().filter(x=>x!==id)); renderTray(); }
+  renderTray();
+
+  // Sortable (disabled until edit mode)
+  const sortables=[];
+  if(typeof Sortable!=='undefined'){
+    containers.forEach(c=>{ sortables.push(new Sortable(c.el,{ animation:150, disabled:true, draggable:'[data-mod]', ghostClass:'sortable-ghost', onEnd:()=>{ const ids=Array.prototype.slice.call(c.el.children).map(x=>x.dataset.mod).filter(Boolean); const o=getOrder(); o[c.sel]=ids; setOrder(o); } })); });
+  }
+
+  // Edit toggle button injected into header
+  let editing=false;
+  const btn=document.createElement('button'); btn.type='button'; btn.className='edit-layout-btn'; btn.textContent='✏️ Edit layout';
+  btn.addEventListener('click',()=>{ editing=!editing; document.body.classList.toggle('editing',editing); sortables.forEach(s=>s.option('disabled',!editing)); btn.textContent=editing?'✓ Done':'✏️ Edit layout'; btn.classList.toggle('active',editing); if(editing) tray.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  const host=document.querySelector('.badges')||document.querySelector('.topbar-meta')||document.querySelector('.top');
+  if(host) host.appendChild(btn);
 })();
 
 </script>
