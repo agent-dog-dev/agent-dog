@@ -47,8 +47,8 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .read{color:var(--purple2);border-color:rgba(167,139,250,.35);background:rgba(124,58,237,.1)}
 .dogusd{color:white;border-color:rgba(247,147,26,.35);background:rgba(247,147,26,.08)}
 .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012)),var(--card);border:1px solid var(--line);border-radius:15px;overflow:hidden}
-.grid1{display:grid;grid-template-columns:430px 1fr;gap:12px;margin-bottom:12px}
-.welcome{height:430px;position:relative;background:#09090f;overflow:hidden}
+.grid1{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+.welcome{display:none}
 .welcome > img{width:100%;height:100%;object-fit:cover;object-position:center 46%;filter:saturate(1.1) contrast(1.05)}
 .welcome:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,4,7,.84) 0%,rgba(4,4,7,.48) 43%,rgba(4,4,7,.05) 100%)}
 .welcome .copy{position:absolute;left:22px;top:35px;right:220px;z-index:2}
@@ -66,7 +66,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 }
 .label{font:850 12px "JetBrains Mono",ui-monospace,monospace;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;gap:10px;align-items:center;position:relative;z-index:5}
 .dot{width:6px;height:6px;background:var(--purple2);box-shadow:0 0 12px var(--purple2);border-radius:50%}
-.price{position:relative;z-index:6;font-size:34px;font-weight:950;letter-spacing:-.06em;margin-top:8px}
+.price{position:relative;z-index:6;font-size:28px;font-weight:950;letter-spacing:-.06em;margin-top:6px}
 .chg{position:relative;z-index:6;margin-top:12px;display:inline-flex;align-items:center;gap:8px;color:var(--green);background:rgba(74,222,128,.12);border-radius:10px;padding:8px 12px;font:900 16px "JetBrains Mono",ui-monospace,monospace}
 
 /* FIX: one combined transparent asset instead of two badly positioned overlays */
@@ -113,8 +113,8 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
 .cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px;text-align:center}
 .cell b{display:block;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:15px}
 .cell span{color:var(--muted);font-size:10px;text-transform:uppercase}
-.grid3{display:grid;grid-template-columns:375px 1fr 300px 340px;gap:12px;margin-bottom:12px;align-items:start}
-.risk{grid-column:1/3;min-height:300px;position:relative}
+.grid3{display:grid;grid-template-columns:375px 1fr 300px 340px;gap:12px;margin-bottom:12px;align-items:stretch}
+.risk{grid-column:1/3;min-height:300px;position:relative;display:flex;flex-direction:column;justify-content:space-between}
 .guardmark{position:absolute;right:21px;top:9px;width:42px;height:42px;border-radius:11px;object-fit:cover;border:1px solid var(--line2);opacity:.82;filter:saturate(1.05) contrast(1.05)}
 .ritem{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:8px;background:rgba(255,255,255,.04);border-left:3px solid var(--purple2);border-radius:8px;padding:11px 11px;margin:9px 0;font-size:13px}
 .ritem .name{color:var(--muted)}
@@ -240,7 +240,7 @@ h1{font-size:25px;font-weight:850;letter-spacing:-.035em}
   height:76px !important;
 }
 .grid2{
-  align-items:start !important;
+  align-items:stretch !important;
 }
 
 /* FIX largeur dashboard */
@@ -484,7 +484,7 @@ body{
           </div>
           <div class="topbar-meta" style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap"><div style="display:inline-flex;align-items:center;gap:7px;padding:4px 10px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500"><span style="width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;display:inline-block"></span><span>Pack Active — <span style="color:#4ade80;font-weight:600">Reading market</span></span></div><div id="utc-clock" style="display:inline-flex;align-items:center;gap:7px;padding:4px 10px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#60a5fa;font-weight:700">UTC</span><span id="utc-time" style="color:#f5f5fa;font-weight:600">--:--:--</span></div><button id="btn-refresh-now" type="button" onclick="forceRefreshAll()" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(96,165,250,.10);border:1px solid rgba(96,165,250,.35);border-radius:6px;font-size:10px;color:#60a5fa;font-weight:600;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.05em" onmouseover="this.style.background='rgba(96,165,250,.20)'" onmouseout="this.style.background='rgba(96,165,250,.10)'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"></path></svg>Refresh Now</button><button id="btn-auto-toggle" type="button" onclick="toggleAutoRefresh()" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(74,222,128,.10);border:1px solid rgba(74,222,128,.35);border-radius:6px;font-size:10px;color:#4ade80;font-weight:600;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.05em" onmouseover="this.style.background='rgba(74,222,128,.20)'" onmouseout="this.style.background='rgba(74,222,128,.10)'"><span id="auto-toggle-dot" style="width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block"></span><span id="auto-toggle-text">Auto: ON</span></button><div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(244,185,66,.08);border:1px solid rgba(244,185,66,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#f4b942;font-weight:700">Cycles</span><span id="cycles-count" style="color:#f5f5fa;font-weight:600">0</span></div><div id="last-decision-meta" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#a78bfa;font-weight:700">Last</span><span id="last-decision-text" style="color:#f5f5fa;font-weight:600">—</span></div><div id="regime-meta" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.25);border-radius:6px;font-size:10px;color:#b0b0c0;font-weight:500;font-family:'JetBrains Mono',monospace"><span style="color:#2dd4bf;font-weight:700">Regime</span><span id="market-regime" style="color:#f5f5fa;font-weight:600">—</span></div></div></div>
       </div>
-      <div class="badges"><span class="badge cli">✓ Kraken CLI</span><span class="badge read">🔒 Read-Only Mode</span><span class="badge dogusd">DOGUSD</span></div>
+      <div class="badges"><span class="badge cli">✓ Kraken CLI</span><span class="badge read">🔒 Read-Only Mode</span><span class="badge dogusd">DOGUSD</span><img src="/assets/dog_kraken_purple.png" alt="DOG" style="height:54px;width:54px;object-fit:cover;border-radius:10px;margin-left:12px;border:1px solid rgba(167,139,250,.4)"></div>
     </div>
 
     <!-- Agent Cast Section removed (rebrand: Agent DOG / Beacon · Compass · Anchor · Helm) -->
