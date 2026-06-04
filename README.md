@@ -12,7 +12,7 @@
 [![Paper Only](https://img.shields.io/badge/Mode-Paper%20Only-orange)](docs/SAFETY.md)
 [![Kraken CLI](https://img.shields.io/badge/Built%20on-Kraken%20CLI-7c3aed)](https://github.com/krakenfx/kraken-cli)
 [![Multi-Agent](https://img.shields.io/badge/Works%20with-Claude%20%C2%B7%20Cursor%20%C2%B7%20Codex%20%C2%B7%20OpenClaw-blueviolet)](docs/MCP_AGENT_COMPATIBILITY.md)
-[![Bitcoin Runes](https://img.shields.io/badge/Asset-%24DOG%20on%20Bitcoin%20L1-f7931a)](https://runes.dog)
+[![Bitcoin Runes](https://img.shields.io/badge/Asset-%24DOG%20on%20Bitcoin%20L1-f7931a)](https://pro.kraken.com/app/trade/dog-usd)
 
 **Five in the pack. One human in control. Zero risk. Woof to the moon. 🌙**
 
@@ -438,7 +438,7 @@ We don't reinvent — we extend. Agent DOG adds:
 
 Agent DOG hard-codes **DOGUSD** throughout. Any attempt to trade `XDGUSD` is rejected by the Anchor.
 
-Learn more about $DOG: [runes.dog](https://runes.dog/)
+$DOG (DOGUSD) on Kraken: [pro.kraken.com](https://pro.kraken.com/app/trade/dog-usd)
 
 ---
 

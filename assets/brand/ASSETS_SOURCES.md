@@ -9,12 +9,11 @@
 
 | Asset | Source | Status | Usage | Notes |
 |-------|--------|--------|-------|-------|
-| DOG Runes Logo | https://runes.dog | Official | Hero section, favicon | Bitcoin L1 Runes token |
+| DOG Runes Logo | Community (source to verify) | Reference | Hero section, favicon | Bitcoin L1 Runes token |
 | DOG Color Palette | Community | Reference | UI accents | Gold #f4b942, Bitcoin orange #f7931a |
 | "Woof to the moon" | Community | Reference | Tagline | DOG Army culture |
 
-**Official Links:**
-- Website: https://runes.dog
+**Reference Links:**
 - Explorer: https://ordinals.com/rune/DOG%E2%80%A2GO%E2%80%A2TO%E2%80%A2THE%E2%80%A2MOON
 - Twitter: @doggotothemoon
 
@@ -72,7 +71,6 @@ The following should be collected manually if needed:
 
 1. **DOG Runes official logo PNG/SVG**
    - Source: Contact @doggotothemoon on Twitter
-   - Or extract from runes.dog with permission
    - Usage: Hero section, favicon
 
 2. **Kraken CLI logo** (if exists)
