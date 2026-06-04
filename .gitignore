@@ -46,3 +46,4 @@ kraken_releases.json
 # Internal working docs (NOT for public submission repo)
 docs/KRAKEN_AGENT_ZERO_RULES.md
 docs/VIDEO_V2_SCRIPT.md
+docs/SESSION_HANDOFF.md
