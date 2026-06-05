@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - Dashboard Server
+ * Agent DOG - Dashboard Server
  * READ-ONLY / NO LIVE TRADING
  * Local dashboard for demo purposes
  */
@@ -187,20 +187,22 @@ app.get('/api/dog/history', (req, res) => {
       { timeout: 8000, cwd: resolve(__dirname, '..') }).toString();
     const data = JSON.parse(out);
     let candles = [];
-    const raw = (data.result && (data.result.DOGUSD || data.result.XDGUSD)) || data.DOGUSD || data.XDGUSD || Object.values(data)[0];
-    if (Array.isArray(raw)) {
-      candles = raw.slice(-48).map(c => ({
-        time: parseInt(c[0]),
-        open: parseFloat(c[1]),
-        high: parseFloat(c[2]),
-        low: parseFloat(c[3]),
-        close: parseFloat(c[4]),
-        vwap: parseFloat(c[5]),
-        volume: parseFloat(c[6])
-      }));
+    const raw = (data.result && data.result.DOGUSD) || data.DOGUSD;
+    if (!Array.isArray(raw)) {
+      throw new Error('OHLC: no DOGUSD candles (XDGUSD/Dogecoin fallback removed)');
     }
+    candles = raw.slice(-48).map(c => ({
+      time: parseInt(c[0]),
+      open: parseFloat(c[1]),
+      high: parseFloat(c[2]),
+      low: parseFloat(c[3]),
+      close: parseFloat(c[4]),
+      vwap: parseFloat(c[5]),
+      volume: parseFloat(c[6])
+    }));
     res.json({ pair: 'DOGUSD', interval: '60min', candles });
   } catch (e) {
+    console.warn('[/api/dog/history] DOGUSD OHLC unavailable:', e.message);
     res.json({ pair: 'DOGUSD', interval: '60min', candles: [] });
   }
 });
@@ -293,7 +295,7 @@ app.use('/api', (req, res) => {
 // Start Server
 // ============================================
 app.listen(PORT, HOST, () => {
-  console.log('🐕 DOG Paper Coach Dashboard');
+  console.log('🐕 Agent DOG Dashboard');
   console.log(`   Mode: PAPER ONLY / NO LIVE TRADING`);
   console.log(`   URL: http://${HOST}:${PORT}`);
   console.log(`   API: http://${HOST}:${PORT}/api/status`);

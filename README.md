@@ -6,7 +6,7 @@
 
 *Built for the DOG Army that wants to keep their sats safe.*
 
-*Four Kraken CLI skills. Paper first. Human in control. Multi-agent ready.*
+*Four Kraken CLI agents. Paper first. Human in control. Multi-agent ready.*
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Paper Only](https://img.shields.io/badge/Mode-Paper%20Only-orange)](docs/SAFETY.md)
@@ -22,7 +22,7 @@
 
 ## 🎯 What is Agent DOG?
 
-**Agent DOG** is a pack of **4 reusable Kraken CLI agent skills** — plus **🦉 Sage**, an in-dashboard AI educator — that turn your AI agent into a safe paper-trading companion for **$DOG** (DOG•GO•TO•THE•MOON on Bitcoin Runes — *not* Dogecoin).
+**Agent DOG** is a pack of **4 Kraken CLI agents** (3 reusable skills + the Helm recipe) — plus **🦉 Sage**, an in-dashboard AI educator — that turn your AI agent into a safe paper-trading companion for **$DOG** (DOG•GO•TO•THE•MOON on Bitcoin Runes — *not* Dogecoin).
 
 It runs on top of the official [Kraken CLI](https://github.com/krakenfx/kraken-cli) and works with any AI agent that supports MCP or skills: **Claude Code, Cursor, Codex, OpenClaw, Gemini CLI, Goose, or plain terminal**.
 
@@ -60,7 +60,7 @@ Kraken CLI / MCP
 
 ## 🦉 Meet Sage — the AI Education Layer
 
-The four Kraken CLI skills do the work. **Sage** makes it understandable.
+The four Kraken CLI agents do the work. **Sage** makes it understandable.
 
 Sage is an in-dashboard educational assistant that explains — in plain language — what the Pack Index means, why the Decision Engine says HOLD, what RSI / EMA / VWAP are, and what $DOG actually is. Sage reads the **live dashboard state** to answer in context.
 
@@ -517,7 +517,7 @@ These modules give the cockpit market depth — but **no indicator triggers a tr
 ## 🗺️ Roadmap
 
 Phase 1 (this submission):
-- ✅ 4 reusable Kraken CLI skills
+- ✅ 4 Kraken CLI agents (3 reusable skills + Helm recipe)
 - ✅ Pack Index deterministic engine
 - ✅ Read-only cockpit dashboard
 - ✅ Multi-agent compatibility

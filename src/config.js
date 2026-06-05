@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - Configuration
+ * Agent DOG - Configuration
  * PAPER ONLY / NO LIVE TRADING
  */
 
@@ -44,7 +44,7 @@ export const config = {
   paperBalanceUsd: parseFloat(process.env.PAPER_BALANCE_USD || '10000'),
   
   // Bot info
-  botName: 'DOG Paper Coach',
+  botName: 'Agent DOG',
   version: '0.1.0'
 };
 

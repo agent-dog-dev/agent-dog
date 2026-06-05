@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - Kraken CLI Wrapper
+ * Agent DOG - Kraken CLI Wrapper
  * PAPER ONLY / NO LIVE TRADING
  * Safe wrapper around kraken CLI binary
  */

@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - State Management
+ * Agent DOG - State Management
  * PAPER ONLY / NO LIVE TRADING
  */
 

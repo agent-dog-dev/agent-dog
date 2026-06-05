@@ -20,7 +20,7 @@ function ohlcCloses(interval) {
       timeout: 10000
     });
     const data = JSON.parse(out);
-    const arr = data.DOGUSD || data.XDGUSD || Object.values(data)[0] || [];
+    const arr = data.DOGUSD || [];
     return arr.map(c => parseFloat(c[4])).filter(x => x > 0); // close prices
   } catch {
     return [];

@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - Reporter
+ * Agent DOG - Reporter
  * PAPER ONLY / NO LIVE TRADING
  * Real Kraken CLI data with mock fallback
  */
@@ -326,7 +326,7 @@ export async function generateStartMessage() {
   }
   
   return `
-🐕 <b>Bienvenue sur DOG Paper Coach!</b>
+🐕 <b>Welcome to Agent DOG!</b>
 
 ⚡ <b>Mode:</b> PAPER ONLY / NO LIVE TRADING
 🎯 <b>Objectif:</b> Coaching éducatif pour le trading

@@ -687,7 +687,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
       </div>
     </section>
 
-    <!-- Multi-Agent Vote (déterministe) — la décision émerge d'un vote pondéré -->
+    <!-- Multi-Agent Vote (deterministic) — the decision emerges from a weighted vote -->
     <style>@media(max-width:760px){.mav-grid{grid-template-columns:repeat(2,1fr)!important}}@media(max-width:440px){.mav-grid{grid-template-columns:1fr!important}}</style>
     <section id="nav-vote" style="margin-bottom:18px">
       <div class="card pad" style="overflow:hidden">
@@ -1657,7 +1657,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 <script>
-/* Data source toggle (maquette) — Paper vs Kraken read-only. A read-only key shows REAL balances; it can never trade. */
+/* Data source toggle (mockup) — Paper vs Kraken read-only. A read-only key shows REAL balances; it can never trade. */
 (function(){
   const paperBtn=document.getElementById('src-paper');
   const krakenBtn=document.getElementById('src-kraken');

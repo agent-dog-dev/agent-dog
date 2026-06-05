@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - Telegram Bot
+ * Agent DOG - Telegram Bot
  * PAPER ONLY / NO LIVE TRADING
  */
 
@@ -32,7 +32,7 @@ if (!config.telegramBotToken) {
 // ============================================
 const bot = new TelegramBot(config.telegramBotToken, { polling: true });
 
-console.log('🐕 DOG Paper Coach démarré');
+console.log('🐕 Agent DOG started');
 console.log(`   Mode: ${config.tradingMode}`);
 console.log(`   LLM: ${config.llmProvider}`);
 console.log('   ⚠️  PAPER ONLY - NO LIVE TRADING');

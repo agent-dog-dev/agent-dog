@@ -1,5 +1,5 @@
 /**
- * DOG Paper Coach - Decision Engine (Multi-Agent Vote)
+ * Agent DOG - Decision Engine (Multi-Agent Vote)
  * PAPER ONLY / NO LIVE TRADING
  * Deterministic decision engine for DOGUSD.
  *
