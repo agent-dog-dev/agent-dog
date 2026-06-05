@@ -546,7 +546,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
   <aside class="side">
     <div class="logoM"><img src="/assets/kraken_logo.png?v=2" alt="Kraken"></div>
     <div class="ico active">⌂</div><div class="ico">◇</div><div class="ico">▥</div><div class="ico">▧</div><div class="ico">▣</div><div class="ico">⬡</div><div class="ico">⬟</div>
-    <div class="grow"></div><div class="ico">⚙</div><div class="ico">◉</div>
+    <div class="grow"></div><div class="ico" id="set-open" title="Settings" style="cursor:pointer">⚙</div><div class="ico">◉</div>
   </aside>
   <main>
     <div class="top">
@@ -579,7 +579,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
     </section>
 
     <!-- Action bar — the human decides; the agent never executes an order itself -->
-    <section style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:-6px 0 18px">
+    <section id="nav-actions" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:-6px 0 18px">
       <button id="preview-trade-btn" type="button" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;font:800 13px 'JetBrains Mono',ui-monospace,monospace;color:#c4b5fd;background:rgba(124,58,237,.14);border:1px solid rgba(167,139,250,.45);border-radius:10px;cursor:pointer">⚓ Preview trade</button>
       <a href="https://pro.kraken.com/app/trade/dog-usd" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;font:800 13px 'JetBrains Mono',ui-monospace,monospace;color:#0b0b10;background:#f7931a;border:1px solid #f7931a;border-radius:10px;text-decoration:none">Trade on Kraken ↗</a>
       <span style="font:600 11px 'JetBrains Mono',ui-monospace,monospace;color:#6c6c80">You decide — the agent never places an order itself.</span>
@@ -602,6 +602,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
         </label>
         <div id="tp-decision" style="font:600 11px 'JetBrains Mono',monospace;color:#a78bfa;margin-bottom:10px"></div>
         <div id="tp-rows" style="font:600 13px 'JetBrains Mono',monospace;color:#e8e6f0;line-height:1.85"></div>
+        <div id="tp-ai" style="margin-top:10px"></div>
         <div style="display:flex;gap:10px;margin-top:16px">
           <button id="tp-copy" type="button" style="flex:1;padding:10px;font:800 12px 'JetBrains Mono',monospace;border-radius:9px;cursor:pointer;border:1px solid rgba(167,139,250,.45);background:rgba(124,58,237,.14);color:#c4b5fd">📋 Copy plan</button>
           <a href="https://pro.kraken.com/app/trade/dog-usd" target="_blank" rel="noopener noreferrer" style="flex:1;text-align:center;padding:10px;font:800 12px 'JetBrains Mono',monospace;border-radius:9px;border:1px solid #f7931a;background:#f7931a;color:#0b0b10;text-decoration:none">Open on Kraken ↗</a>
@@ -713,6 +714,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
           </div>
         </div>
         <div id="mav-agents" class="mav-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"></div>
+        <div id="mav-ai" style="margin-top:14px"></div>
       </div>
     </section>
 
@@ -812,6 +814,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
       <div class="panel-header">
         <h2>🦉 ASK SAGE — Pack Educator</h2>
         <span class="panel-subtitle">Sage explains. Never decides.</span>
+        <span id="sage-status" style="margin-left:10px;font:800 9.5px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:#8f8fa3;vertical-align:middle">AI: …</span>
       </div>
       <div class="sage-faq-buttons">
         <button class="sage-question" data-q="pack-index">What is Pack Index?</button>
@@ -1230,6 +1233,26 @@ setInterval(incrementCycle, 5000); // Synced with main refresh
 })();
 
 // ===== SAGE 🦉 FAQ Handler =====
+function mdToHtml(md){
+  if(!md) return '';
+  let s=String(md).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s=s.replace(/`([^`]+)`/g,'<code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px">$1</code>');
+  s=s.replace(/\*\*([^*]+)\*\*/g,'<strong style="color:#f0eefb">$1</strong>');
+  s=s.replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>');
+  const lines=s.split(/\r?\n/); let out='', inUl=false;
+  const closeUl=()=>{ if(inUl){ out+='</ul>'; inUl=false; } };
+  for(const line of lines){
+    const t=line.trim();
+    if(!t){ closeUl(); continue; }
+    const h=t.match(/^(#{1,4})\s+(.*)$/);
+    if(h){ closeUl(); const sz={1:15,2:14,3:13,4:12}[h[1].length]||12; out+='<div style="font-weight:800;color:#c4b5fd;font-size:'+sz+'px;margin:10px 0 4px">'+h[2]+'</div>'; continue; }
+    const li=t.match(/^[-*]\s+(.*)$/)||t.match(/^\d+\.\s+(.*)$/);
+    if(li){ if(!inUl){ out+='<ul style="margin:4px 0 4px 18px;padding:0">'; inUl=true; } out+='<li style="margin:2px 0">'+li[1]+'</li>'; continue; }
+    closeUl(); out+='<div style="margin:5px 0">'+t+'</div>';
+  }
+  closeUl(); return out;
+}
+
 function getSageContext() {
   function readText(selector) {
     const el = document.querySelector(selector);
@@ -1433,6 +1456,10 @@ document.addEventListener('DOMContentLoaded', () => {
   async function ask() {
     const q = input.value.trim();
     if (!q) return;
+    if (window.__sageLive && window.__sageLive.configured && !window.__sageLive.on) {
+      answerDiv.innerHTML = '<div class="sage-response"><p>🦉 Live AI is OFF. Turn it on with the AI badge (top of this panel), or use the quick questions above.</p></div>';
+      return;
+    }
     btn.disabled = true;
     answerDiv.innerHTML = '<div class="sage-response"><p>🦉 Sage is thinking…</p></div>';
     try {
@@ -1448,7 +1475,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data && data.answer) {
         const ans = document.createElement('div');
         ans.className = 'sage-llm-answer';
-        ans.textContent = data.answer;
+        ans.innerHTML = (typeof mdToHtml==='function') ? mdToHtml(data.answer) : data.answer;
         wrap.appendChild(ans);
         const disc = document.createElement('p');
         disc.className = 'sage-disclaimer';
@@ -1470,6 +1497,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btn.addEventListener('click', ask);
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ask(); });
+})();
+
+// ===== Sage AI toggle — clickable ON/OFF for live answers (key stays server-side) =====
+(async function initSageToggle(){
+  const el = document.getElementById('sage-status');
+  if (!el) return;
+  window.__sageLive = { configured: false, on: false };
+  let configured = false;
+  try {
+    const s = await (await fetch('/api/status')).json();
+    configured = !!(s && s.sageConfigured);
+  } catch (e) { /* assume off */ }
+
+  function render(on){
+    el.textContent = on ? 'AI: ON' : 'AI: OFF';
+    el.style.color = on ? '#34d399' : '#e8b87a';
+    el.style.background = on ? 'rgba(52,211,153,.12)' : 'rgba(247,147,26,.10)';
+    el.style.cursor = configured ? 'pointer' : 'default';
+    el.title = !configured
+      ? 'Add ANTHROPIC_API_KEY to .env to enable live Sage answers. The dashboard works fully without it.'
+      : (on ? 'Live AI is ON — click to turn Sage off (dashboard stays fully deterministic). Advisory only; never trades.'
+            : 'Live AI is OFF — click to turn Sage on. Quick questions still work.');
+    window.__sageLive = { configured, on };
+    window.dispatchEvent(new CustomEvent('sage-ai-change'));
+  }
+
+  let on = configured && (localStorage.getItem('sageLiveOn') !== '0');
+  render(on);
+
+  if (configured) {
+    el.addEventListener('click', () => {
+      on = !on;
+      localStorage.setItem('sageLiveOn', on ? '1' : '0');
+      render(on);
+    });
+  }
 })();
 
 // ===== Multi-Timeframe Trend (Idea 7) — informational, read-only =====
@@ -1758,6 +1821,133 @@ document.addEventListener('DOMContentLoaded', () => {
   copyBtn.addEventListener('click',copyPlan);
   modal.addEventListener('click',e=>{ if(e.target===modal) close(); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+})();
+</script>
+<!-- ===== Settings modal — front-end only; no secret stored in the browser (opened via the sidebar gear) ===== -->
+<div id="set-modal" style="display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,.66);align-items:center;justify-content:center;padding:18px" role="dialog" aria-modal="true">
+  <div style="max-width:460px;width:100%;max-height:88vh;overflow:auto;background:#14141c;border:1px solid rgba(167,139,250,.4);border-radius:16px;padding:22px;box-shadow:0 30px 90px rgba(0,0,0,.7);font-family:'JetBrains Mono',ui-monospace,monospace">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div style="font:900 14px 'JetBrains Mono',monospace;color:#c4b5fd;letter-spacing:.06em">⚙ SETTINGS</div>
+      <button id="set-close" type="button" style="background:none;border:none;color:#888;font-size:24px;line-height:1;cursor:pointer">×</button>
+    </div>
+    <div style="padding:10px 12px;margin-bottom:16px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.25);border-radius:9px;font:600 11px 'JetBrains Mono',monospace;color:#9fdcb0;line-height:1.55">Agent DOG works fully <b>without any API key</b> — the engine is deterministic. A key only enables Sage's live explanations.</div>
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🦉 AI Co-Pilot (Sage)</div>
+    <label style="display:block;font:600 11px 'JetBrains Mono',monospace;color:#aaa5b8;margin-bottom:5px">LLM provider</label>
+    <select id="set-llm" style="width:100%;padding:9px 10px;margin-bottom:12px;background:#0c0c12;border:1px solid rgba(167,139,250,.3);border-radius:8px;color:#f5f5fa;font:700 12px 'JetBrains Mono',monospace">
+      <option value="anthropic">Claude (Anthropic) — available</option>
+      <option value="openai">OpenAI — not connected</option>
+      <option value="gemini">Gemini — not connected</option>
+      <option value="none">None (deterministic only)</option>
+    </select>
+    <div style="margin-bottom:10px"><span id="set-key-status" style="font:700 11px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:#8f8fa3">Key: …</span></div>
+    <label style="display:block;font:600 11px 'JetBrains Mono',monospace;color:#aaa5b8;margin-bottom:5px">API key</label>
+    <input id="set-key" type="password" placeholder="sk-ant-..." autocomplete="off" style="width:100%;padding:9px 10px;background:#0c0c12;border:1px solid rgba(167,139,250,.3);border-radius:8px;color:#f5f5fa;font:600 12px 'JetBrains Mono',monospace">
+    <div style="margin-top:8px;padding:10px 12px;background:rgba(247,147,26,.08);border:1px solid rgba(247,147,26,.3);border-radius:9px;font:600 10.5px 'JetBrains Mono',monospace;color:#e8b87a;line-height:1.55">🔒 For your security, the key is <b>never stored in the browser nor sent from this page</b>. To activate: click <b>Show .env line</b>, paste it into your <b>.env</b> file, then restart the dashboard.</div>
+    <button id="set-envline" type="button" style="width:100%;margin-top:12px;padding:9px;font:800 11px 'JetBrains Mono',monospace;border-radius:8px;cursor:pointer;border:1px solid rgba(167,139,250,.45);background:rgba(124,58,237,.14);color:#c4b5fd">📋 Show .env line</button>
+    <div id="set-envout" style="display:none;margin-top:8px;padding:9px 11px;background:#0c0c12;border:1px solid rgba(167,139,250,.3);border-radius:8px;font:600 11px 'JetBrains Mono',monospace;color:#9fdcb0;word-break:break-all"></div>
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin:18px 0 8px">🧩 Panels (show / hide)</div>
+    <label style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;font:600 12px 'JetBrains Mono',monospace;color:#e8e6f0;border-bottom:1px solid rgba(255,255,255,.06)">Multi-Agent Vote<input type="checkbox" id="set-vote" style="width:16px;height:16px;accent-color:#a78bfa;cursor:pointer"></label>
+    <label style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;font:600 12px 'JetBrains Mono',monospace;color:#e8e6f0;border-bottom:1px solid rgba(255,255,255,.06)">Trade Plan actions<input type="checkbox" id="set-actions" style="width:16px;height:16px;accent-color:#a78bfa;cursor:pointer"></label>
+    <label style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;font:600 12px 'JetBrains Mono',monospace;color:#e8e6f0">Ask Sage panel<input type="checkbox" id="set-sage" style="width:16px;height:16px;accent-color:#a78bfa;cursor:pointer"></label>
+    <div style="margin-top:8px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80;line-height:1.5">Hiding Multi-Agent hides only the display — the deterministic engine keeps running.</div>
+  </div>
+</div>
+<script>
+// ===== Settings modal — front-end only; never stores or sends a secret =====
+(function(){
+  const modal=document.getElementById('set-modal');
+  if(!modal) return;
+  const open=()=>{modal.style.display='flex';};
+  const close=()=>{modal.style.display='none';};
+  const ob=document.getElementById('set-open'); if(ob) ob.addEventListener('click',open);
+  const cbx=document.getElementById('set-close'); if(cbx) cbx.addEventListener('click',close);
+  modal.addEventListener('click',e=>{ if(e.target===modal) close(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+
+  // Panel show/hide (persisted; restores original display so flex layouts survive)
+  [{cb:'set-vote',sel:'#nav-vote',key:'panel.vote'},
+   {cb:'set-actions',sel:'#nav-actions',key:'panel.actions'},
+   {cb:'set-sage',sel:'#sage-section',key:'panel.sage'}].forEach(p=>{
+    const cb=document.getElementById(p.cb), el=document.querySelector(p.sel);
+    if(!cb||!el) return;
+    const orig=el.style.display||'';
+    const show=localStorage.getItem(p.key)!=='off';
+    cb.checked=show; el.style.display=show?orig:'none';
+    cb.addEventListener('change',()=>{
+      el.style.display=cb.checked?orig:'none';
+      localStorage.setItem(p.key,cb.checked?'on':'off');
+    });
+  });
+
+  // LLM provider preference (not a secret)
+  const llm=document.getElementById('set-llm');
+  if(llm){ llm.value=localStorage.getItem('llmProvider')||'anthropic';
+    llm.addEventListener('change',()=>localStorage.setItem('llmProvider',llm.value)); }
+
+  // Key status from server (boolean only — the key itself never leaves .env)
+  (async()=>{ const st=document.getElementById('set-key-status'); if(!st) return;
+    try{ const s=await (await fetch('/api/status')).json(); const on=!!(s&&s.sageConfigured);
+      st.textContent=on?'Key: connected via .env ✓':'Key: not connected';
+      st.style.color=on?'#34d399':'#e8b87a';
+      st.style.background=on?'rgba(52,211,153,.12)':'rgba(247,147,26,.10)';
+    }catch(e){} })();
+
+  // "Show .env line" — built locally, copied to clipboard; never sent anywhere
+  const envBtn=document.getElementById('set-envline'), keyIn=document.getElementById('set-key'), envOut=document.getElementById('set-envout');
+  if(envBtn&&keyIn&&envOut){ envBtn.addEventListener('click',()=>{
+    const k=(keyIn.value||'').trim();
+    const line='ANTHROPIC_API_KEY='+(k||'<your-key-here>');
+    envOut.textContent=line+'    ← paste into .env, then restart';
+    envOut.style.display='block';
+    try{ if(k&&navigator.clipboard) navigator.clipboard.writeText(line).catch(()=>{}); }catch(e){}
+  }); }
+})();
+</script>
+<script>
+// ===== Optional AI detail — Multi-Agent vote + Trade Plan explained by Sage (explain-only; needs API key) =====
+(function(){
+  function aiState(){ return window.__sageLive || {configured:false,on:false}; }
+  function available(){ const a=aiState(); return a.configured && a.on; }
+
+  async function sageExplain(question, extra, outEl, btn){
+    if(!available()){
+      outEl.style.display='block'; outEl.style.color='#e8b87a';
+      outEl.textContent='🔒 Turn on the AI co-pilot (sidebar ⚙ → Settings; needs an API key in .env) for a plain-English explanation. The dashboard stays fully usable without it.';
+      return;
+    }
+    const old=btn.textContent; btn.disabled=true; btn.textContent='🦉 Thinking…';
+    outEl.style.display='block'; outEl.style.color='#8f8fa3'; outEl.textContent='🦉 Sage is thinking…';
+    try{
+      const base=(typeof getSageContext==='function')?getSageContext():{};
+      const r=await fetch('/api/sage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:question,context:Object.assign({},base,extra)})});
+      const d=await r.json();
+      if(d&&d.answer){ outEl.style.color='#d8d4e8'; outEl.innerHTML=(typeof mdToHtml==='function')?mdToHtml(d.answer):d.answer; }
+      else { outEl.style.color='#e8b87a'; outEl.textContent=(d&&d.message)?d.message:'Sage is unavailable right now.'; }
+    }catch(e){ outEl.style.color='#e8b87a'; outEl.textContent='Sage is unavailable right now.'; }
+    finally{ btn.disabled=false; btn.textContent=old; }
+  }
+
+  // Multi-Agent vote — optional AI explanation
+  const mavWrap=document.getElementById('mav-ai');
+  if(mavWrap){
+    mavWrap.innerHTML='<button id="mav-explain" type="button" style="padding:8px 14px;font:800 11px \'JetBrains Mono\',monospace;border-radius:8px;cursor:pointer;border:1px solid rgba(167,139,250,.45);background:rgba(124,58,237,.14);color:#c4b5fd">🦉 Explain this vote</button><span id="mav-ai-hint" style="margin-left:10px;font:600 10.5px \'JetBrains Mono\',monospace;color:#6c6c80"></span><div id="mav-explain-out" style="display:none;margin-top:10px;padding:11px 13px;background:rgba(124,58,237,.06);border:1px solid rgba(167,139,250,.2);border-radius:9px;font:600 12px \'JetBrains Mono\',monospace;line-height:1.6"></div>';
+    const btn=document.getElementById('mav-explain'), out=document.getElementById('mav-explain-out'), hint=document.getElementById('mav-ai-hint');
+    btn.addEventListener('click',()=>sageExplain('In 3-4 sentences, explain in plain English WHY the multi-agent weighted vote produced this decision for DOGUSD, referencing the Trend, Momentum, Liquidity and Risk agents and any Risk veto. Educational only; never financial advice.', {}, out, btn));
+    function sync(){ const av=available(); if(hint) hint.textContent=av?'':'🔒 AI off — base view'; btn.style.opacity=av?'1':'.7'; }
+    sync(); window.addEventListener('sage-ai-change',sync);
+  }
+
+  // Trade Plan — optional AI explanation
+  const tpAi=document.getElementById('tp-ai');
+  if(tpAi){
+    tpAi.innerHTML='<button id="tp-explain" type="button" style="width:100%;padding:9px;font:800 11px \'JetBrains Mono\',monospace;border-radius:8px;cursor:pointer;border:1px solid rgba(167,139,250,.45);background:rgba(124,58,237,.14);color:#c4b5fd">🦉 Explain this plan</button><div id="tp-explain-out" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(124,58,237,.06);border:1px solid rgba(167,139,250,.2);border-radius:9px;font:600 11.5px \'JetBrains Mono\',monospace;line-height:1.6"></div>';
+    const btn=document.getElementById('tp-explain'), out=document.getElementById('tp-explain-out');
+    btn.addEventListener('click',()=>{
+      const decTxt=((document.getElementById('tp-decision')||{}).textContent||'');
+      const rowsTxt=((document.getElementById('tp-rows')||{}).textContent||'');
+      sageExplain('In 3-4 sentences, explain this DOGUSD paper trade plan in plain English (entry, stop-loss, take-profit, risk/reward) and remind that the user executes manually on Kraken — the dashboard places no order. Educational only.', {tradePlan:(decTxt+' | '+rowsTxt).slice(0,400)}, out, btn);
+    });
+  }
 })();
 </script>
 </body>

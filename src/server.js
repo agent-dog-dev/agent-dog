@@ -56,6 +56,7 @@ app.get('/api/status', async (req, res) => {
   res.json({
     status: 'online',
     mode: 'PAPER_ONLY',
+    sageConfigured: !!process.env.ANTHROPIC_API_KEY,
     cliConnected: cli.available,
     cliVersion: cli.version,
     timestamp: new Date().toISOString()
