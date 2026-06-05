@@ -1,6 +1,6 @@
 {
   "name": "agent-dog",
-  "version": "0.3.0",
+  "version": "2.0.0",
   "description": "Bitcoin-native AI agent skills for the DOG Army, built on Kraken CLI",
   "type": "module",
   "main": "src/telegram.js",

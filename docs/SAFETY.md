@@ -8,11 +8,11 @@
 - All orders execute via `kraken paper buy/sell` only
 - No production API endpoints exist
 
-### 2. NO API KEYS REQUIRED
-- Kraken CLI uses public market data
-- No authentication needed for ticker/spot data
-- Paper trading uses CLI's internal paper mode
-- No credentials stored in code or env
+### 2. NO API KEYS REQUIRED (core)
+- Kraken CLI uses public market data — no auth for ticker/spot/OHLC
+- Paper trading uses the CLI's internal paper mode
+- The deterministic dashboard runs with zero keys
+- Optional: Sage AI co-pilot reads `ANTHROPIC_API_KEY` from `.env` (gitignored, advisory only — never trades)
 
 ### 3. HUMAN CONFIRMATION MANDATORY
 - `/paper_preview_buy` or `/paper_preview_sell` creates pending order
@@ -71,6 +71,6 @@ If any safety rule is violated:
 
 ---
 
-**Last Updated**: 2026-05-23  
-**Version**: 0.1.0  
-**Project**: DOG Paper Coach - Kraken Agent Zero
+**Last Updated**: 2026-06-05  
+**Version**: 2.0.0  
+**Project**: Agent DOG - Kraken Agent Zero

@@ -31,6 +31,15 @@ body{display:flex;justify-content:center;align-items:flex-start;padding:18px 0;b
 .logoM img{width:76%;height:76%;object-fit:contain}
 .ico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:#777288;font-size:19px}
 .ico.active{color:#b99aff;background:rgba(124,58,237,.18);border:1px solid rgba(167,139,250,.42)}
+.wrap{transition:grid-template-columns .22s ease}
+.wrap.nav-open{grid-template-columns:212px 1fr}
+.nav-toggle{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#777288;font-size:18px;cursor:pointer;flex-shrink:0}
+.nav-toggle:hover{color:#b99aff;background:rgba(124,58,237,.12)}
+.side .ico-label{display:none;white-space:nowrap;font:700 12.5px 'JetBrains Mono',ui-monospace,monospace;color:#c4c0d4}
+.wrap.nav-open .side{align-items:stretch;padding-left:10px;padding-right:10px}
+.wrap.nav-open .side .logoM{align-self:flex-start;margin-left:6px}
+.wrap.nav-open .side .ico,.wrap.nav-open .side .nav-toggle{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;padding-left:11px;box-sizing:border-box}
+.wrap.nav-open .side .ico-label{display:inline}
 .grow{flex:1}
 .main{padding:18px 24px 18px}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -545,6 +554,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
 <div class="wrap">
   <aside class="side">
     <div class="logoM"><img src="/assets/kraken_logo.png?v=2" alt="Kraken"></div>
+    <div class="nav-toggle" id="nav-toggle" title="Menu">☰<span class="ico-label">Menu</span></div>
     <div class="ico active">⌂</div><div class="ico">◇</div><div class="ico">▥</div><div class="ico">▧</div><div class="ico">▣</div><div class="ico">⬡</div><div class="ico">⬟</div>
     <div class="grow"></div><div class="ico" id="set-open" title="Settings" style="cursor:pointer">⚙</div><div class="ico">◉</div>
   </aside>
@@ -684,7 +694,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
           <div class="pvalue" id="current">$9,999.997</div><div class="center">Current Value</div>
           <div class="pgrid"><div class="cell"><b id="starting">$10,000.00</b><span>Starting Balance</span></div><div class="cell"><b id="pnl" style="color:var(--red)">-$0.003</b><span>Unrealized PnL</span></div><div class="cell"><b id="total">2</b><span>Total Trades</span></div><div class="cell"><b id="orders">0</b><span>Open Orders</span></div></div>
         </div>
-        <div id="kraken-ro-note" style="display:none;padding:14px;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.3);border-radius:9px;font:600 11.5px 'JetBrains Mono',monospace;color:#e8b87a;line-height:1.6">🔒 <b style="color:#f7931a">Read-only mode — not connected.</b><br>Add a Kraken <b>read-only</b> API key (permissions <i>Query Funds / Open Orders &amp; Trades</i> only) to <b>.env</b> to show your <b>real</b> balance, PnL &amp; positions here.<br><span style="color:#9aa39a">A read-only key <b>cannot trade or withdraw</b> — the agent still never touches your funds.</span></div>
+        <div id="kraken-ro-note" style="display:none;padding:14px;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.3);border-radius:9px;font:600 11.5px 'JetBrains Mono',monospace;color:#e8b87a;line-height:1.6">🔒 <b style="color:#f7931a">Kraken read-only view — planned.</b><br>This dashboard currently shows <b>paper-trading</b> data only. A read-only Kraken key (<i>Query Funds</i> only) is <b>planned</b> to display your real balance, PnL &amp; positions here.<br><span style="color:#9aa39a">Read-only by design — the agent <b>never trades or withdraws</b> your funds.</span></div>
       </div>
     </section>
 
@@ -855,7 +865,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
         <span style="color:#b0b0c0;font-weight:600">Agent DOG</span>
         <span style="color:#6c6c80"> · </span>
         <span style="color:#a78bfa;font-weight:600">v2.0.0</span>
-        <span style="color:#6c6c80"> · Build 2026.05.25 · </span>
+        <span style="color:#6c6c80"> · Build 2026.06.05 · </span>
         <span style="color:#f7931a">Paper-first</span>
         <span style="color:#6c6c80"> · Kraken Agent Zero Submission</span>
       </div>
@@ -1948,6 +1958,23 @@ document.addEventListener('DOMContentLoaded', () => {
       sageExplain('In 3-4 sentences, explain this DOGUSD paper trade plan in plain English (entry, stop-loss, take-profit, risk/reward) and remind that the user executes manually on Kraken — the dashboard places no order. Educational only.', {tradePlan:(decTxt+' | '+rowsTxt).slice(0,400)}, out, btn);
     });
   }
+})();
+</script>
+<script>
+// ===== Expandable sidebar — collapsed icon rail; click ☰ to reveal page names =====
+(function(){
+  const wrap=document.querySelector('.wrap');
+  const toggle=document.getElementById('nav-toggle');
+  if(!wrap||!toggle) return;
+  const icos=[...document.querySelectorAll('.side .ico')];
+  const LABELS=['Current Intent','Live Cockpit','Multi-Agent Vote','Market Intelligence','Paper Track Record','Ask Sage','Safety','Settings'];
+  icos.forEach((ic,i)=>{
+    if(i<LABELS.length && !ic.querySelector('.ico-label')){
+      const lb=document.createElement('span'); lb.className='ico-label'; lb.textContent=LABELS[i]; ic.appendChild(lb);
+    }
+    if(i<=7){ ic.addEventListener('click',()=>wrap.classList.remove('nav-open')); } // auto-collapse after picking a page
+  });
+  toggle.addEventListener('click',()=>wrap.classList.toggle('nav-open'));
 })();
 </script>
 </body>
