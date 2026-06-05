@@ -8,7 +8,7 @@ import express from 'express';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { getCliStatus, getDogTicker, getPaperStatus } from './kraken.js';
+import { getCliStatus, getDogTicker, getPaperStatus, getPairInfo, getSpreads } from './kraken.js';
 import { makeDecision } from './strategy.js';
 import { paperState } from './state.js';
 import { getBtcNetwork } from './btcNetwork.js';
@@ -179,6 +179,20 @@ app.get('/api/paper/history', (req, res) => {
 // GET /api/dog/perps - PF_DOGUSD perpetual market data (READ-ONLY, informational; no orders)
 app.get('/api/dog/perps', (req, res) => {
   res.json(getPerps());
+});
+
+// GET /api/dog/pair - DOGUSD pair validation + metadata via `kraken pairs` (READ-ONLY)
+app.get('/api/dog/pair', async (req, res) => {
+  const data = await getPairInfo();
+  if (!data.success) return res.status(503).json({ error: 'Kraken CLI unavailable' });
+  res.json(data);
+});
+
+// GET /api/dog/spreads - Recent DOGUSD bid/ask spreads via `kraken spreads` (READ-ONLY)
+app.get('/api/dog/spreads', async (req, res) => {
+  const data = await getSpreads();
+  if (!data.success) return res.status(503).json({ error: 'Kraken CLI unavailable' });
+  res.json(data);
 });
 
 // GET /api/dog/history - OHLC history for interactive chart

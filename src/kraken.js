@@ -315,6 +315,84 @@ export async function paperSell(volume) {
   }
 }
 
+/**
+ * Validate the DOGUSD pair + metadata via `kraken pairs` (READ-ONLY, public).
+ * Confirms $DOG on Bitcoin Runes — base asset is DOG, never Dogecoin (XDG).
+ * @returns {Promise<Object>}
+ */
+export async function getPairInfo() {
+  try {
+    const data = await krakenExec(['pairs', '--pair', 'DOGUSD', '-o', 'json']);
+    const p = data && data.DOGUSD;
+    if (!p) throw new Error('DOGUSD not returned by kraken pairs');
+    const takerFee = Array.isArray(p.fees) && p.fees[0] ? p.fees[0][1] : null;
+    const makerFee = Array.isArray(p.fees_maker) && p.fees_maker[0] ? p.fees_maker[0][1] : null;
+    return {
+      success: true,
+      pair: 'DOGUSD',
+      base: p.base,              // "DOG" → Bitcoin Runes, not Dogecoin
+      quote: p.quote,            // "ZUSD"
+      wsname: p.wsname,          // "DOG/USD"
+      status: p.status,          // "online"
+      verified: p.base === 'DOG' && p.altname === 'DOGUSD',
+      isDogecoin: p.base === 'XDG' || p.base === 'XXDG',
+      ordermin: p.ordermin,
+      costmin: p.costmin,
+      tickSize: p.tick_size,
+      pairDecimals: p.pair_decimals,
+      lotDecimals: p.lot_decimals,
+      takerFeePct: takerFee,
+      makerFeePct: makerFee,
+      source: 'kraken-cli',
+      command: 'kraken pairs --pair DOGUSD',
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('[getPairInfo] Failed:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Recent DOGUSD bid/ask spreads via `kraken spreads` (READ-ONLY microstructure).
+ * Returns current + average/min/max spread % over the recent window.
+ * @returns {Promise<Object>}
+ */
+export async function getSpreads() {
+  const round2 = (x) => Math.round(x * 100) / 100;
+  try {
+    const data = await krakenExec(['spreads', 'DOGUSD', '-o', 'json']);
+    const arr = (data && data.DOGUSD) || [];
+    if (!Array.isArray(arr) || arr.length === 0) throw new Error('No DOGUSD spreads');
+    const pts = arr.map((e) => {
+      const bid = parseFloat(e[1]);
+      const ask = parseFloat(e[2]);
+      const mid = (bid + ask) / 2;
+      return { time: parseInt(e[0]), bid, ask, spreadPct: mid > 0 ? ((ask - bid) / mid) * 100 : 0 };
+    }).filter((p) => isFinite(p.spreadPct));
+    if (!pts.length) throw new Error('No valid spread points');
+    const recent = pts.slice(-60);
+    const pcts = recent.map((p) => p.spreadPct);
+    const avg = pcts.reduce((s, x) => s + x, 0) / pcts.length;
+    const last = pts[pts.length - 1];
+    return {
+      success: true,
+      pair: 'DOGUSD',
+      current: { bid: last.bid, ask: last.ask, spreadPct: round2(last.spreadPct) },
+      avgPct: round2(avg),
+      minPct: round2(Math.min.apply(null, pcts)),
+      maxPct: round2(Math.max.apply(null, pcts)),
+      samples: pts.length,
+      source: 'kraken-cli',
+      command: 'kraken spreads DOGUSD',
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('[getSpreads] Failed:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
 export default {
   getCliStatus,
   getDogTicker,
@@ -323,5 +401,7 @@ export default {
   previewPaperBuy,
   previewPaperSell,
   paperBuy,
-  paperSell
+  paperSell,
+  getPairInfo,
+  getSpreads
 };

@@ -788,6 +788,24 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
       <div class="last-update" style="font-size:9px;color:#6c6c80;text-align:right;margin-top:8px;font-family:'JetBrains Mono',monospace">Last update: <span class="last-update-time" id="pulse-last-update">--:--:--</span></div>
     </section>
 
+    <section class="card pad pairverify-card" style="margin:18px 0">
+      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="ct" style="margin:0">🔎 Pair Verification</div>
+        <span class="badge" id="pv-status" style="font-size:10px">—</span>
+      </div>
+      <div id="pv-verified" style="font:700 12.5px 'JetBrains Mono',monospace;color:#9fdcb0;margin-bottom:10px">—</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div class="pulse-cell"><b id="pv-ordermin">—</b><span>Min order</span></div>
+        <div class="pulse-cell"><b id="pv-costmin">—</b><span>Min cost</span></div>
+        <div class="pulse-cell"><b id="pv-tick">—</b><span>Tick size</span></div>
+        <div class="pulse-cell"><b id="pv-taker">—</b><span>Taker fee</span></div>
+        <div class="pulse-cell"><b id="pv-maker">—</b><span>Maker fee</span></div>
+        <div class="pulse-cell"><b id="pv-spread">—</b><span>Spread now</span></div>
+      </div>
+      <div id="pv-spreadline" style="font:600 10.5px 'JetBrains Mono',monospace;color:#8f8fa3;margin-top:9px">—</div>
+      <div style="font:600 10px 'JetBrains Mono',monospace;color:#6c6c80;margin-top:6px;line-height:1.55">$DOG = Bitcoin Runes (DOG•GO•TO•THE•MOON) — <b style="color:#9aa39a">not Dogecoin (XDGUSD)</b>. Live via <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken pairs</code> + <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken spreads</code>.</div>
+    </section>
+
     <section class="card mtf-card">
       <div class="ct">🕒 Multi-Timeframe Trend <span class="mtf-note">informational · does not change the deterministic decision</span></div>
       <div class="mtf-grid" id="mtf-grid">
@@ -1975,6 +1993,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if(i<=7){ ic.addEventListener('click',()=>wrap.classList.remove('nav-open')); } // auto-collapse after picking a page
   });
   toggle.addEventListener('click',()=>wrap.classList.toggle('nav-open'));
+})();
+</script>
+<script>
+// ===== Pair Verification card — live via kraken pairs + kraken spreads (read-only) =====
+(function(){
+  const set=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=v;};
+  async function loadPair(){
+    try{ const r=await fetch('/api/dog/pair'); if(!r.ok) return; const d=await r.json();
+      const ok=d.verified && d.status==='online';
+      const st=document.getElementById('pv-status');
+      if(st){ st.textContent=ok?'VERIFIED ✓':'CHECK'; st.style.color=ok?'#4ade80':'#e8b87a'; }
+      set('pv-verified','✓ '+d.pair+' verified — base '+d.base+' / quote '+(d.quote==='ZUSD'?'USD':d.quote)+' · status '+d.status);
+      set('pv-ordermin', Number(d.ordermin).toLocaleString('en-US')+' DOG');
+      set('pv-costmin', '$'+Number(d.costmin).toFixed(2));
+      set('pv-tick', d.tickSize);
+      set('pv-taker', Number(d.takerFeePct).toFixed(2)+'%');
+      set('pv-maker', Number(d.makerFeePct).toFixed(2)+'%');
+    }catch(e){}
+  }
+  async function loadSpreads(){
+    try{ const r=await fetch('/api/dog/spreads'); if(!r.ok) return; const d=await r.json();
+      if(d.current) set('pv-spread', d.current.spreadPct+'%');
+      const line=document.getElementById('pv-spreadline');
+      if(line && d.current) line.textContent='Spread: now '+d.current.spreadPct+'% · avg '+d.avgPct+'% · min '+d.minPct+'% · max '+d.maxPct+'% ('+d.samples+' samples)';
+    }catch(e){}
+  }
+  loadPair(); loadSpreads();
+  setInterval(loadSpreads, 30000);
 })();
 </script>
 </body>
