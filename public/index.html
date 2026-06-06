@@ -40,6 +40,11 @@ body{display:flex;justify-content:center;align-items:flex-start;padding:18px 0;b
 .wrap.nav-open .side .logoM{align-self:flex-start;margin-left:6px}
 .wrap.nav-open .side .ico,.wrap.nav-open .side .nav-toggle{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;padding-left:11px;box-sizing:border-box}
 .wrap.nav-open .side .ico-label{display:inline}
+#portfolio-card.balances-hidden #current,#portfolio-card.balances-hidden #starting,#portfolio-card.balances-hidden #pnl,#portfolio-card.balances-hidden #kr-dogval,#portfolio-card.balances-hidden #kr-dog,#portfolio-card.balances-hidden #kr-usd,#portfolio-card.balances-hidden #kr-list{filter:blur(8px);transition:filter .15s;user-select:none}
+.act-head,.act-row{display:grid;grid-template-columns:1.5fr .7fr 1fr 1.1fr 1fr;gap:8px}
+.act-head{font:700 9.5px 'JetBrains Mono',monospace;color:#6c6c80;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 7px;border-bottom:1px solid rgba(255,255,255,.07)}
+.act-row{font:600 11.5px 'JetBrains Mono',monospace;color:#d8d4e8;padding:8px 2px;border-bottom:1px solid rgba(255,255,255,.04)}
+[data-mod]{position:relative}
 .grow{flex:1}
 .main{padding:18px 24px 18px}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -555,7 +560,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
   <aside class="side">
     <div class="logoM"><img src="/assets/kraken_logo.png?v=2" alt="Kraken"></div>
     <div class="nav-toggle" id="nav-toggle" title="Menu">☰<span class="ico-label">Menu</span></div>
-    <div class="ico active">⌂</div><div class="ico">◇</div><div class="ico">▥</div><div class="ico">▧</div><div class="ico">▣</div><div class="ico">⬡</div><div class="ico">⬟</div>
+    <div class="ico active">⌂</div><div class="ico">◇</div><div class="ico">▥</div><div class="ico">▧</div><div class="ico">▣</div><div class="ico">⬡</div><div class="ico">⬟</div><div class="ico">▤</div>
     <div class="grow"></div><div class="ico" id="set-open" title="Settings" style="cursor:pointer">⚙</div><div class="ico">◉</div>
   </aside>
   <main>
@@ -648,7 +653,17 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
       </div>
     </section>
 
-    <div id="nav-cockpit" class="section-head" style="--sec:#a78bfa"><span class="bar"></span><span class="lbl">📊 Live Cockpit</span><span class="sub">deterministic decision · live market</span></div>
+    <!-- AI quick-ask bar — shortcut to Sage (Sage panel stays below) -->
+    <section id="ai-quickbar" class="card pad" style="margin-bottom:18px;border:1px solid rgba(167,139,250,.35);background:linear-gradient(180deg,rgba(124,58,237,.07),rgba(124,58,237,.02))">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span style="font:800 16px 'JetBrains Mono',monospace">🦉</span>
+        <input id="aq-input" type="text" placeholder="Ask me anything about $DOG — quick answer, no scrolling…" maxlength="500" autocomplete="off" style="flex:1;min-width:220px;padding:11px 14px;background:#0c0c12;border:1px solid rgba(167,139,250,.3);border-radius:10px;color:#f5f5fa;font:600 13px 'JetBrains Mono',monospace">
+        <button id="aq-ask" type="button" style="padding:11px 22px;font:800 13px 'JetBrains Mono',monospace;border-radius:10px;cursor:pointer;border:1px solid #a78bfa;background:#a78bfa;color:#0e0e16">Ask</button>
+      </div>
+      <div id="aq-answer" style="display:none;margin-top:12px;padding:13px 15px;background:rgba(124,58,237,.06);border:1px solid rgba(167,139,250,.2);border-radius:10px;font:600 12.5px 'JetBrains Mono',monospace;line-height:1.6;color:#d8d4e8"></div>
+    </section>
+
+    <div id="nav-cockpit" class="section-head" style="--sec:#a78bfa"><span class="bar"></span><span class="lbl">📊 Overview</span><span class="sub">deterministic decision · live market</span></div>
     <section class="grid2">
       <div class="card pack">
         <div>
@@ -682,12 +697,12 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
         <div class="conf" id="confidence">Confidence: 50%</div>
       </div>
 
-      <div class="card pad">
+      <div class="card pad" id="portfolio-card">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
-          <div class="ct" style="margin:0">💼 <span id="portfolio-title">Paper Portfolio</span></div>
-          <div style="display:inline-flex;border:1px solid rgba(167,139,250,.3);border-radius:8px;overflow:hidden;flex-shrink:0">
+          <div class="ct" style="margin:0">💼 <span id="portfolio-title">Paper Portfolio</span><button type="button" id="hide-balance" title="Hide / show balance" style="margin-left:8px;background:none;border:0;color:#8f8fa3;font-size:13px;cursor:pointer;vertical-align:middle">👁</button></div>
+          <div style="display:inline-flex;border:1px solid rgba(167,139,250,.3);border-radius:8px;overflow:hidden;flex-shrink:0;margin-right:6px">
             <button type="button" id="src-paper" style="padding:5px 10px;font:800 9.5px 'JetBrains Mono',monospace;border:0;cursor:pointer;background:rgba(124,58,237,.22);color:#c4b5fd">Paper</button>
-            <button type="button" id="src-kraken" style="padding:5px 10px;font:800 9.5px 'JetBrains Mono',monospace;border:0;border-left:1px solid rgba(167,139,250,.3);cursor:pointer;background:transparent;color:#8f8fa3">🔒 Kraken read-only</button>
+            <button type="button" id="src-kraken" style="padding:5px 10px;font:800 9.5px 'JetBrains Mono',monospace;border:0;border-left:1px solid rgba(167,139,250,.3);cursor:pointer;background:transparent;color:#8f8fa3">🔒 Kraken</button>
           </div>
         </div>
         <div id="portfolio-body">
@@ -695,6 +710,18 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
           <div class="pgrid"><div class="cell"><b id="starting">$10,000.00</b><span>Starting Balance</span></div><div class="cell"><b id="pnl" style="color:var(--red)">-$0.003</b><span>Unrealized PnL</span></div><div class="cell"><b id="total">2</b><span>Total Trades</span></div><div class="cell"><b id="orders">0</b><span>Open Orders</span></div></div>
         </div>
         <div id="kraken-ro-note" style="display:none;padding:14px;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.3);border-radius:9px;font:600 11.5px 'JetBrains Mono',monospace;color:#e8b87a;line-height:1.6">🔒 <b style="color:#f7931a">Kraken read-only view — planned.</b><br>This dashboard currently shows <b>paper-trading</b> data only. A read-only Kraken key (<i>Query Funds</i> only) is <b>planned</b> to display your real balance, PnL &amp; positions here.<br><span style="color:#9aa39a">Read-only by design — the agent <b>never trades or withdraws</b> your funds.</span></div>
+        <div id="kraken-ro-body" style="display:none">
+          <div style="font:800 11px 'JetBrains Mono',monospace;color:#34d399;margin-bottom:10px">✓ Connected to Kraken <span style="color:#9aa39a;font-weight:600">— read-only · never trades or withdraws</span></div>
+          <div class="pvalue" id="kr-dogval">$—</div><div class="center">Your $DOG value</div>
+          <div class="pgrid">
+            <div class="cell"><b id="kr-dog">—</b><span>$DOG held</span></div>
+            <div class="cell"><b id="kr-usd">—</b><span>USD cash</span></div>
+            <div class="cell"><b id="kr-assets">—</b><span>Assets</span></div>
+            <div class="cell"><b id="kr-updated">—</b><span>Updated</span></div>
+          </div>
+          <div id="kr-list" style="margin-top:10px;font:600 11px 'JetBrains Mono',monospace;color:#aaa5b8;line-height:1.7"></div>
+          <div style="margin-top:8px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80">Live via <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken balance</code> · read-only.</div>
+        </div>
       </div>
     </section>
 
@@ -744,7 +771,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
     </section>
 
     <!-- Market Intelligence Add-on -->
-    <div id="nav-market" class="section-head" style="--sec:#2dd4bf"><span class="bar"></span><span class="lbl">🛰 Market Intelligence</span><span class="sub">read-only · live Kraken feed</span></div>
+    <div id="nav-market" class="section-head" style="--sec:#2dd4bf"><span class="bar"></span><span class="lbl">🛰 Explore</span><span class="sub">read-only · live Kraken feed</span></div>
     <section class="intel-row">
       <div class="card btc-network">
         <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -803,7 +830,7 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
         <div class="pulse-cell"><b id="pv-spread">—</b><span>Spread now</span></div>
       </div>
       <div id="pv-spreadline" style="font:600 10.5px 'JetBrains Mono',monospace;color:#8f8fa3;margin-top:9px">—</div>
-      <div style="font:600 10px 'JetBrains Mono',monospace;color:#6c6c80;margin-top:6px;line-height:1.55">$DOG = Bitcoin Runes (DOG•GO•TO•THE•MOON) — <b style="color:#9aa39a">not Dogecoin (XDGUSD)</b>. Live via <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken pairs</code> + <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken spreads</code>.</div>
+      <div style="font:600 10px 'JetBrains Mono',monospace;color:#6c6c80;margin-top:6px;line-height:1.55">$DOG = Bitcoin Runes (DOG•GO•TO•THE•MOON). Live via <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken pairs</code> + <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken spreads</code>.</div>
     </section>
 
     <section class="card mtf-card">
@@ -822,19 +849,6 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
         <div class="perps-cell"><div class="perps-val" id="perps-funding">--</div><div class="perps-lbl">Funding Rate</div></div>
         <div class="perps-cell"><div class="perps-val" id="perps-oi">--</div><div class="perps-lbl">Open Interest</div></div>
         <div class="perps-cell"><div class="perps-val" id="perps-vol">--</div><div class="perps-lbl">24h Volume</div></div>
-      </div>
-    </section>
-
-    <section id="nav-track" class="card pnl-card">
-      <div class="ct">💰 Paper Track Record <span class="mtf-note">realized P&amp;L from your paper trades · fees included, honest</span></div>
-      <div class="pnl-wrap">
-        <div class="pnl-stats">
-          <div class="pnl-stat"><div class="pnl-val" id="pnl-realized">--</div><div class="pnl-lbl">Realized P&amp;L</div></div>
-          <div class="pnl-stat"><div class="pnl-val" id="pnl-trades">--</div><div class="pnl-lbl">Trades</div></div>
-          <div class="pnl-stat"><div class="pnl-val" id="pnl-open">--</div><div class="pnl-lbl">Open (DOG)</div></div>
-          <div class="pnl-stat"><div class="pnl-val" id="pnl-fees">--</div><div class="pnl-lbl">Fees Paid</div></div>
-        </div>
-        <div class="pnl-chart-wrap"><canvas id="pnl-chart"></canvas></div>
       </div>
     </section>
 
@@ -864,6 +878,30 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
       </div>
     </section>
 
+    <section id="nav-track" class="card pnl-card">
+      <div class="ct">💰 Paper Track Record <span class="mtf-note">realized P&amp;L from your paper trades · fees included, honest</span></div>
+      <div class="pnl-wrap">
+        <div class="pnl-stats">
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-realized">--</div><div class="pnl-lbl">Realized P&amp;L</div></div>
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-trades">--</div><div class="pnl-lbl">Trades</div></div>
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-open">--</div><div class="pnl-lbl">Open (DOG)</div></div>
+          <div class="pnl-stat"><div class="pnl-val" id="pnl-fees">--</div><div class="pnl-lbl">Fees Paid</div></div>
+        </div>
+        <div class="pnl-chart-wrap"><canvas id="pnl-chart"></canvas></div>
+      </div>
+    </section>
+
+    <div id="nav-activity" class="section-head" style="--sec:#60a5fa"><span class="bar"></span><span class="lbl">📜 Activity</span><span class="sub">paper trade history · read-only</span></div>
+    <section class="card pad activity-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="ct" style="margin:0">📜 Trade History</div>
+        <span class="badge" id="act-count" style="font-size:10px">—</span>
+      </div>
+      <div id="act-pnl" style="display:none;margin-bottom:12px;padding:10px 12px;background:rgba(124,58,237,.06);border:1px solid rgba(167,139,250,.2);border-radius:9px;font:700 12px 'JetBrains Mono',monospace"></div>
+      <div id="act-list"><div style="color:#6c6c80;font:600 11px 'JetBrains Mono',monospace">Loading…</div></div>
+      <div style="margin-top:10px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80">Live via <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">kraken paper history</code> · simulated trades, no real money.</div>
+    </section>
+
     <div id="nav-safety" class="section-head" style="--sec:#f7931a"><span class="bar"></span><span class="lbl">🛡 Safety</span><span class="sub">enforced in code</span></div>
     <section class="card rules-card">
       <div class="ct">🛡️ Pack Safety Rules <span class="mtf-note">enforced in code — not just promises</span></div>
@@ -889,6 +927,9 @@ body.editing .edit-tray{ display:flex; flex-wrap:wrap; align-items:center; gap:8
       </div>
       <div style="font-size:10px;color:#6c6c80">
         Read-only dashboard · No orders possible via this interface
+      </div>
+      <div style="margin-top:10px">
+        <a href="/guide.pdf" download="Agent_DOG_Guide.pdf" style="color:#e8b87a;text-decoration:none;font-weight:600;border:1px solid rgba(247,147,26,.4);border-radius:7px;padding:6px 12px;font-size:10px">📄 Download guide (PDF)</a>
       </div>
     </footer>
   </main>
@@ -1425,7 +1466,7 @@ const SAGE_ANSWERS = {
     <p>Agent DOG is designed safety-first. Hard rules enforced at the code level:</p>
     <ul>
       <li>✅ <code>LIVE_TRADING_ENABLED = false</code></li>
-      <li>✅ DOGUSD only (XDGUSD/Dogecoin rejected)</li>
+      <li>✅ DOGUSD only (XDGUSD rejected)</li>
       <li>✅ Max 5% position size per trade</li>
       <li>✅ Human <code>--confirm</code> required for every action</li>
       <li>✅ Dashboard is read-only (no POST/PUT/DELETE)</li>
@@ -1489,7 +1530,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     btn.disabled = true;
-    answerDiv.innerHTML = '<div class="sage-response"><p>🦉 Sage is thinking…</p></div>';
+    answerDiv.style.display=''; answerDiv.innerHTML = '<div class="sage-response"><p>🦉 Sage is thinking…</p></div>';
     try {
       const ctx = (typeof getSageContext === 'function') ? getSageContext() : {};
       const r = await fetch('/api/sage', {
@@ -1500,6 +1541,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await r.json();
       const wrap = document.createElement('div');
       wrap.className = 'sage-response';
+      const _hb=document.createElement('div'); _hb.style.cssText='display:flex;justify-content:flex-end;margin-bottom:6px'; _hb.innerHTML='<button type="button" class="ans-hide" style="background:none;border:1px solid rgba(167,139,250,.4);color:#a78bfa;border-radius:6px;padding:2px 9px;font:700 10px ui-monospace,monospace;cursor:pointer">▲ Hide</button>'; _hb.querySelector('button').onclick=()=>{ answerDiv.style.display='none'; }; wrap.appendChild(_hb);
       if (data && data.answer) {
         const ans = document.createElement('div');
         ans.className = 'sage-llm-answer';
@@ -1651,7 +1693,11 @@ document.addEventListener('DOMContentLoaded', () => {
     {id:'perps',label:'Perpetual',sel:'.perps-card'},
     {id:'pnl',label:'Track Record',sel:'.pnl-card'},
     {id:'sage',label:'Ask Sage',sel:'#sage-section'},
-    {id:'rules',label:'Safety Rules',sel:'.rules-card'}
+    {id:'rules',label:'Safety Rules',sel:'.rules-card'},
+    {id:'vote',label:'Multi-Agent Vote',sel:'#nav-vote'},
+    {id:'quickbar',label:'AI Ask Bar',sel:'#ai-quickbar'},
+    {id:'pairverify',label:'Pair Verification',sel:'.pairverify-card'},
+    {id:'activity',label:'Activity',sel:'.activity-card'}
   ];
   const modEls={}, modLabel={};
   MODULES.forEach(m=>{ const base=document.querySelector(m.sel); if(!base) return; const el=m.closest?base.closest('.card'):base; if(!el) return; el.dataset.mod=m.id; modEls[m.id]=el; modLabel[m.id]=m.label; });
@@ -1673,7 +1719,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const order=getOrder();
   containers.forEach(c=>{ const ids=order[c.sel]; if(Array.isArray(ids)){ ids.forEach(id=>{ const el=c.el.querySelector('[data-mod="'+id+'"]'); if(el) c.el.appendChild(el); }); } });
   // Restore hidden
-  getHidden().forEach(id=>{ if(modEls[id]) modEls[id].style.display='none'; });
+  getHidden().forEach(id=>{ const el=modEls[id]; if(el){ el.style.display='none'; const ph=el.previousElementSibling; if(ph&&ph.classList&&ph.classList.contains('section-head')) ph.style.display='none'; } });
 
   // Hide buttons on each module
   Object.keys(modEls).forEach(id=>{ const el=modEls[id]; const b=document.createElement('button'); b.className='mod-hide'; b.type='button'; b.textContent='×'; b.title='Hide module'; b.addEventListener('click',(e)=>{ e.stopPropagation(); e.preventDefault(); hideMod(id); }); el.appendChild(b); });
@@ -1683,8 +1729,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const main=document.querySelector('main')||document.body;
   main.insertBefore(tray, main.firstChild);
   function renderTray(){ const h=getHidden(); tray.innerHTML=''; const lbl=document.createElement('span'); lbl.className='tray-lbl'; lbl.textContent=h.length?'Hidden — click to restore:':'Drag cards to reorder · click ✕ to hide a module'; tray.appendChild(lbl); h.forEach(id=>{ const c=document.createElement('button'); c.type='button'; c.className='tray-chip'; c.textContent='+ '+(modLabel[id]||id); c.addEventListener('click',()=>showMod(id)); tray.appendChild(c); }); }
-  function hideMod(id){ if(modEls[id]) modEls[id].style.display='none'; const h=getHidden(); if(h.indexOf(id)<0){ h.push(id); setHidden(h); } renderTray(); }
-  function showMod(id){ if(modEls[id]) modEls[id].style.display=''; setHidden(getHidden().filter(x=>x!==id)); renderTray(); }
+  function hideMod(id){ const el=modEls[id]; if(el){ el.style.display='none'; const ph=el.previousElementSibling; if(ph&&ph.classList&&ph.classList.contains('section-head')) ph.style.display='none'; } const h=getHidden(); if(h.indexOf(id)<0){ h.push(id); setHidden(h); } renderTray(); }
+  function showMod(id){ const el=modEls[id]; if(el){ el.style.display=''; const ph=el.previousElementSibling; if(ph&&ph.classList&&ph.classList.contains('section-head')) ph.style.display=''; } setHidden(getHidden().filter(x=>x!==id)); renderTray(); }
   renderTray();
 
   // Sortable (disabled until edit mode)
@@ -1704,7 +1750,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rbtn=document.createElement('button'); rbtn.type='button'; rbtn.className='reset-layout-btn'; rbtn.textContent='↺ Reset';
   rbtn.addEventListener('click',()=>{
     if(!window.confirm('Reset the dashboard to its default layout? Your customizations will be cleared.')) return;
-    Object.keys(modEls).forEach(id=>{ modEls[id].style.display=''; });
+    Object.keys(modEls).forEach(id=>{ const el=modEls[id]; el.style.display=''; const ph=el.previousElementSibling; if(ph&&ph.classList&&ph.classList.contains('section-head')) ph.style.display=''; });
     containers.forEach(c=>{ (defaultOrder[c.sel]||[]).forEach(id=>{ const el=c.el.querySelector('[data-mod="'+id+'"]'); if(el) c.el.appendChild(el); }); });
     localStorage.removeItem(LS_ORDER); localStorage.removeItem(LS_HIDDEN); renderTray();
   });
@@ -1716,13 +1762,14 @@ document.addEventListener('DOMContentLoaded', () => {
 /* Sidebar navigation — click an icon to smooth-scroll to its section + active highlight on scroll */
 (function(){
   const map=[
-    {ico:0,id:'nav-intent',label:'Current Intent'},
-    {ico:1,id:'nav-cockpit',label:'Live Cockpit'},
-    {ico:2,id:'nav-vote',label:'Multi-Agent Vote'},
-    {ico:3,id:'nav-market',label:'Market Intelligence'},
-    {ico:4,id:'nav-track',label:'Paper Track Record'},
-    {ico:5,id:'sage-section',label:'Ask Sage'},
-    {ico:6,id:'nav-safety',label:'Safety'}
+    {ico:0,id:'nav-intent',label:'Right Now'},
+    {ico:1,id:'nav-cockpit',label:'Overview'},
+    {ico:2,id:'nav-vote',label:'AI Vote'},
+    {ico:3,id:'nav-market',label:'Explore'},
+    {ico:4,id:'sage-section',label:'Ask AI'},
+    {ico:5,id:'nav-track',label:'Performance'},
+    {ico:6,id:'nav-activity',label:'Activity'},
+    {ico:7,id:'nav-safety',label:'Safety'}
   ];
   const icos=[...document.querySelectorAll('.side .ico')];
   if(!icos.length) return;
@@ -1748,27 +1795,67 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 <script>
-/* Data source toggle (mockup) — Paper vs Kraken read-only. A read-only key shows REAL balances; it can never trade. */
+/* Data source toggle — Paper vs Kraken read-only. Read-only key shows REAL balances; it can never trade or withdraw. */
 (function(){
   const paperBtn=document.getElementById('src-paper');
   const krakenBtn=document.getElementById('src-kraken');
   const body=document.getElementById('portfolio-body');
   const note=document.getElementById('kraken-ro-note');
+  const roBody=document.getElementById('kraken-ro-body');
   const title=document.getElementById('portfolio-title');
+  const card=document.getElementById('portfolio-card');
+  const hideBtn=document.getElementById('hide-balance');
   if(!paperBtn||!krakenBtn) return;
   const onCss='background:rgba(124,58,237,.22);color:#c4b5fd';
   const offCss='background:transparent;color:#8f8fa3';
   const base="padding:5px 10px;font:800 9.5px 'JetBrains Mono',monospace;border:0;cursor:pointer;";
+  let account={connected:false,configured:false};
+  let current='paper';
   function set(src){
+    current=src;
     const k=(src==='kraken');
+    const connected=k && account.connected;
     paperBtn.style.cssText=base+(k?offCss:onCss);
     krakenBtn.style.cssText=base+'border-left:1px solid rgba(167,139,250,.3);'+(k?onCss:offCss);
     if(body) body.style.display=k?'none':'block';
-    if(note) note.style.display=k?'block':'none';
-    if(title) title.textContent=k?'Portfolio · Kraken (read-only)':'Paper Portfolio';
+    if(roBody) roBody.style.display=connected?'block':'none';
+    if(note) note.style.display=(k && !account.connected)?'block':'none';
+    if(title) title.textContent=k?(account.connected?'Kraken (read-only)':'Kraken — not connected'):'Paper Portfolio';
   }
   paperBtn.addEventListener('click',()=>set('paper'));
   krakenBtn.addEventListener('click',()=>set('kraken'));
+
+  // Hide / show balance (blur), persisted across visits
+  function applyHide(){ const h=localStorage.getItem('hideBalance')==='1'; if(card) card.classList.toggle('balances-hidden',h); if(hideBtn) hideBtn.style.opacity=h?'1':'.55'; }
+  if(hideBtn) hideBtn.addEventListener('click',()=>{ const h=localStorage.getItem('hideBalance')==='1'; localStorage.setItem('hideBalance', h?'0':'1'); applyHide(); });
+  applyHide();
+
+  // Read-only Kraken account snapshot (real balance) — never trades/withdraws
+  (async function loadAccount(){
+    try{ const r=await fetch('/api/account'); account=await r.json(); }catch(e){}
+    const fmt=(n)=> n>=1000 ? Number(n).toLocaleString('en-US',{maximumFractionDigits:0}) : Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
+    if(account && account.connected && roBody){
+      let dogVal=null;
+      try{ const t=await (await fetch('/api/dog')).json(); if(t && t.last && account.dog) dogVal=account.dog*t.last; }catch(e){}
+      const s=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=v;};
+      s('kr-dogval', dogVal!=null ? '$'+fmt(dogVal) : '—');
+      s('kr-dog', account.dog ? fmt(account.dog)+' DOG' : '0');
+      s('kr-usd', '$'+fmt(account.usd||0));
+      const assets=account.balances?Object.keys(account.balances):[];
+      s('kr-assets', String(assets.length));
+      s('kr-updated', (account.timestamp||'').slice(11,19)+' UTC');
+      const list=document.getElementById('kr-list');
+      if(list && account.balances){
+        const NAMES={ZUSD:'USD',XXBT:'BTC',XETH:'ETH',XXDG:'DOGE',DOG:'DOG',SOL:'SOL',PEPE:'PEPE'};
+        list.innerHTML='Holdings: '+assets.map(a=>(NAMES[a]||a)+' '+fmt(account.balances[a])).join(' · ');
+      }
+    } else if(note && account && account.configured && !account.connected){
+      note.innerHTML='🔒 <b style="color:#f7931a">Kraken key set, but the connection failed.</b><br>Make sure it is a <b>read-only</b> key (Query Funds) with the correct secret, then restart. <span style="color:#9aa39a">The agent never trades or withdraws.</span>';
+    }
+    applyHide();
+    set(current);
+  })();
+
   set('paper');
 })();
 </script>
@@ -1878,6 +1965,28 @@ document.addEventListener('DOMContentLoaded', () => {
     <label style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;font:600 12px 'JetBrains Mono',monospace;color:#e8e6f0;border-bottom:1px solid rgba(255,255,255,.06)">Trade Plan actions<input type="checkbox" id="set-actions" style="width:16px;height:16px;accent-color:#a78bfa;cursor:pointer"></label>
     <label style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;font:600 12px 'JetBrains Mono',monospace;color:#e8e6f0">Ask Sage panel<input type="checkbox" id="set-sage" style="width:16px;height:16px;accent-color:#a78bfa;cursor:pointer"></label>
     <div style="margin-top:8px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80;line-height:1.5">Hiding Multi-Agent hides only the display — the deterministic engine keeps running.</div>
+
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin:18px 0 8px">👤 Profile</div>
+    <label style="display:block;font:600 11px 'JetBrains Mono',monospace;color:#aaa5b8;margin-bottom:5px">Display name (local)</label>
+    <input id="set-name" type="text" maxlength="24" placeholder="e.g. DOG Army" autocomplete="off" style="width:100%;padding:9px 10px;background:#0c0c12;border:1px solid rgba(167,139,250,.3);border-radius:8px;color:#f5f5fa;font:600 12px 'JetBrains Mono',monospace">
+    <div style="margin-top:6px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80">Stored only in your browser. Auto-refresh is managed in the top bar (Auto / Refresh Now).</div>
+
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin:18px 0 8px">♻️ Reset &amp; help</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button id="set-replay" type="button" style="flex:1;min-width:140px;padding:9px;font:800 11px 'JetBrains Mono',monospace;border-radius:8px;cursor:pointer;border:1px solid rgba(167,139,250,.45);background:rgba(124,58,237,.14);color:#c4b5fd">🐕 Replay tutorial</button>
+      <button id="set-reset" type="button" style="flex:1;min-width:140px;padding:9px;font:800 11px 'JetBrains Mono',monospace;border-radius:8px;cursor:pointer;border:1px solid rgba(247,147,26,.45);background:rgba(247,147,26,.12);color:#e8b87a">↺ Reset dashboard</button>
+    </div>
+    <div style="margin-top:6px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80">Reset clears your local customization (panels, layout, name, AI toggle). It does NOT touch your paper or Kraken data.</div>
+
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin:18px 0 8px">📄 Guide</div>
+    <a href="/guide.pdf" download="Agent_DOG_Guide.pdf" style="display:inline-block;padding:9px 14px;font:800 11px 'JetBrains Mono',monospace;border-radius:8px;text-decoration:none;border:1px solid rgba(247,147,26,.45);background:rgba(247,147,26,.12);color:#e8b87a">📄 Download guide (PDF)</a>
+    <div style="margin-top:6px;font:600 10px 'JetBrains Mono',monospace;color:#6c6c80">12-page project &amp; dashboard guide. No personal data.</div>
+
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin:18px 0 8px">ℹ️ About</div>
+    <div style="font:600 11px 'JetBrains Mono',monospace;color:#aaa5b8;line-height:1.8">
+      Agent DOG <b style="color:#c4b5fd">v2.0.0</b> · Paper-first · Kraken Agent Zero<br>
+      Data: Kraken CLI · TradingView · mempool.space
+    </div>
   </div>
 </div>
 <script>
@@ -1960,7 +2069,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(mavWrap){
     mavWrap.innerHTML='<button id="mav-explain" type="button" style="padding:8px 14px;font:800 11px \'JetBrains Mono\',monospace;border-radius:8px;cursor:pointer;border:1px solid rgba(167,139,250,.45);background:rgba(124,58,237,.14);color:#c4b5fd">🦉 Explain this vote</button><span id="mav-ai-hint" style="margin-left:10px;font:600 10.5px \'JetBrains Mono\',monospace;color:#6c6c80"></span><div id="mav-explain-out" style="display:none;margin-top:10px;padding:11px 13px;background:rgba(124,58,237,.06);border:1px solid rgba(167,139,250,.2);border-radius:9px;font:600 12px \'JetBrains Mono\',monospace;line-height:1.6"></div>';
     const btn=document.getElementById('mav-explain'), out=document.getElementById('mav-explain-out'), hint=document.getElementById('mav-ai-hint');
-    btn.addEventListener('click',()=>sageExplain('In 3-4 sentences, explain in plain English WHY the multi-agent weighted vote produced this decision for DOGUSD, referencing the Trend, Momentum, Liquidity and Risk agents and any Risk veto. Educational only; never financial advice.', {}, out, btn));
+    btn.addEventListener('click',()=>sageExplain('In 3-4 sentences, explain WHY the multi-agent weighted vote produced this decision for DOGUSD, referencing the Trend, Momentum, Liquidity and Risk agents and any Risk veto. Educational only; never financial advice.', {}, out, btn));
     function sync(){ const av=available(); if(hint) hint.textContent=av?'':'🔒 AI off — base view'; btn.style.opacity=av?'1':'.7'; }
     sync(); window.addEventListener('sage-ai-change',sync);
   }
@@ -1973,7 +2082,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click',()=>{
       const decTxt=((document.getElementById('tp-decision')||{}).textContent||'');
       const rowsTxt=((document.getElementById('tp-rows')||{}).textContent||'');
-      sageExplain('In 3-4 sentences, explain this DOGUSD paper trade plan in plain English (entry, stop-loss, take-profit, risk/reward) and remind that the user executes manually on Kraken — the dashboard places no order. Educational only.', {tradePlan:(decTxt+' | '+rowsTxt).slice(0,400)}, out, btn);
+      sageExplain('In 3-4 sentences, explain this DOGUSD paper trade plan (entry, stop-loss, take-profit, risk/reward) and remind that the user executes manually on Kraken — the dashboard places no order. Educational only.', {tradePlan:(decTxt+' | '+rowsTxt).slice(0,400)}, out, btn);
     });
   }
 })();
@@ -1985,7 +2094,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle=document.getElementById('nav-toggle');
   if(!wrap||!toggle) return;
   const icos=[...document.querySelectorAll('.side .ico')];
-  const LABELS=['Current Intent','Live Cockpit','Multi-Agent Vote','Market Intelligence','Paper Track Record','Ask Sage','Safety','Settings'];
+  const LABELS=['Right Now','Overview','AI Vote','Explore','Ask AI','Performance','Activity','Safety','Settings'];
   icos.forEach((ic,i)=>{
     if(i<LABELS.length && !ic.querySelector('.ico-label')){
       const lb=document.createElement('span'); lb.className='ico-label'; lb.textContent=LABELS[i]; ic.appendChild(lb);
@@ -2021,6 +2130,129 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   loadPair(); loadSpreads();
   setInterval(loadSpreads, 30000);
+})();
+</script>
+<!-- ===== Welcome / onboarding modal (first visit, skippable, reopenable) ===== -->
+<div id="welcome-modal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.72);align-items:center;justify-content:center;padding:18px" role="dialog" aria-modal="true">
+  <div style="max-width:560px;width:100%;max-height:90vh;overflow:auto;background:#14141c;border:1px solid rgba(167,139,250,.45);border-radius:18px;padding:26px 26px 20px;box-shadow:0 36px 110px rgba(0,0,0,.75);font-family:'JetBrains Mono',ui-monospace,monospace">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div id="welcome-title" style="font:900 18px 'JetBrains Mono',monospace;color:#f5f5fa">👋 Welcome to Agent DOG</div>
+      <button id="welcome-skip" type="button" title="Skip" style="background:none;border:none;color:#888;font-size:26px;line-height:1;cursor:pointer">×</button>
+    </div>
+    <div style="font:600 12px 'JetBrains Mono',monospace;color:#a78bfa;margin-bottom:16px">A safer way to follow $DOG — deterministic · paper-first · you stay in control.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;font:600 12.5px 'JetBrains Mono',monospace;color:#d8d4e8;line-height:1.55">
+      <div>🗳️ <b style="color:#c4b5fd">Deterministic engine</b> — a 4-agent weighted vote (Trend · Momentum · Liquidity · Risk) makes the call, 100% reproducible. No black box.</div>
+      <div>🛡️ <b style="color:#c4b5fd">Paper-first &amp; read-only</b> — simulated $DOG paper trading. The agent <b>never touches your funds</b> and <b>never places an order</b>. You confirm everything on Kraken.</div>
+      <div>🦉 <b style="color:#c4b5fd">Sage (optional AI)</b> — explains the vote &amp; trade plans. The dashboard works fully <b>without any API key</b>.</div>
+      <div>🐕 <b style="color:#c4b5fd">$DOG = Bitcoin Runes</b> (DOG•GO•TO•THE•MOON), traded as DOGUSD on Kraken.</div>
+      <div>🧭 Use the left menu (<b>☰</b>) to navigate · <b>⚙ Settings</b> to customize.</div>
+      <div>📄 New here? <a href="/guide.pdf" download="Agent_DOG_Guide.pdf" style="color:#c4b5fd;font-weight:700">Download the guide (PDF)</a> — a 12-page walkthrough.</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;gap:12px;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:8px;font:600 11px 'JetBrains Mono',monospace;color:#8f8fa3;cursor:pointer"><input type="checkbox" id="welcome-dontshow" checked style="width:15px;height:15px;accent-color:#a78bfa;cursor:pointer">Don't show this again</label>
+      <button id="welcome-ok" type="button" style="padding:10px 22px;font:800 13px 'JetBrains Mono',monospace;border-radius:10px;cursor:pointer;border:1px solid #a78bfa;background:#a78bfa;color:#0e0e16">Got it →</button>
+    </div>
+  </div>
+</div>
+<script>
+// ===== Welcome / onboarding modal — first visit, skippable, reopenable via window.openWelcome() =====
+(function(){
+  const KEY='agentdog_welcomed_v1';
+  const modal=document.getElementById('welcome-modal');
+  if(!modal) return;
+  const show=()=>{ const t=document.getElementById('welcome-title'); const n=(localStorage.getItem('displayName')||'').trim(); if(t) t.textContent = n ? ('👋 Welcome back, '+n) : '👋 Welcome to Agent DOG'; modal.style.display='flex'; };
+  const hide=()=>{
+    modal.style.display='none';
+    const dont=document.getElementById('welcome-dontshow');
+    if(dont && dont.checked) localStorage.setItem(KEY,'1');
+  };
+  const ok=document.getElementById('welcome-ok');
+  const skip=document.getElementById('welcome-skip');
+  if(ok) ok.addEventListener('click',hide);
+  if(skip) skip.addEventListener('click',hide);
+  modal.addEventListener('click',(e)=>{ if(e.target===modal) hide(); });
+  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && modal.style.display==='flex') hide(); });
+  // expose for a "replay tutorial" entry (e.g. from Settings)
+  window.openWelcome=()=>{ const d=document.getElementById('welcome-dontshow'); if(d) d.checked=false; show(); };
+  // first visit only
+  if(localStorage.getItem(KEY)!=='1'){ setTimeout(show, 600); }
+})();
+</script>
+<script>
+// ===== AI quick-ask bar — shortcut to Sage (Sage panel stays below) =====
+(function(){
+  const input=document.getElementById('aq-input');
+  const btn=document.getElementById('aq-ask');
+  const out=document.getElementById('aq-answer');
+  if(!input||!btn||!out) return;
+  function aiOn(){ const a=window.__sageLive||{}; return a.configured && a.on; }
+  async function ask(){
+    const q=input.value.trim(); if(!q) return;
+    if(!aiOn()){
+      out.style.display='block'; out.style.color='#e8b87a';
+      out.textContent='🔒 Turn on the AI co-pilot (sidebar ⚙ → Settings; needs an API key in .env) to ask live questions. The deterministic dashboard works without it.';
+      return;
+    }
+    const old=btn.textContent; btn.disabled=true; btn.textContent='…';
+    out.style.display='block'; out.style.color='#8f8fa3'; out.textContent='🦉 Sage is thinking…';
+    try{
+      const ctx=(typeof getSageContext==='function')?getSageContext():{};
+      const r=await fetch('/api/sage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:q,context:ctx})});
+      const d=await r.json();
+      if(d&&d.answer){ out.style.color='#d8d4e8'; out.innerHTML='<div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button type="button" class="ans-hide" style="background:none;border:1px solid rgba(167,139,250,.4);color:#a78bfa;border-radius:6px;padding:2px 9px;font:700 10px ui-monospace,monospace;cursor:pointer">▲ Hide</button></div>'+((typeof mdToHtml==='function')?mdToHtml(d.answer):d.answer); const _h=out.querySelector('.ans-hide'); if(_h) _h.onclick=()=>{ out.style.display='none'; }; }
+      else { out.style.color='#e8b87a'; out.textContent=(d&&d.message)?d.message:'Sage is unavailable right now.'; }
+    }catch(e){ out.style.color='#e8b87a'; out.textContent='Sage is unavailable right now.'; }
+    finally{ btn.disabled=false; btn.textContent=old; }
+  }
+  btn.addEventListener('click',ask);
+  input.addEventListener('keydown',(e)=>{ if(e.key==='Enter') ask(); });
+})();
+</script>
+<script>
+// ===== Activity — paper trade history (read-only, via kraken paper history) =====
+(async function(){
+  const list=document.getElementById('act-list');
+  const cnt=document.getElementById('act-count');
+  if(!list) return;
+  // Realized P&L summary (from paper history)
+  try{
+    const pr=await (await fetch('/api/paper/history')).json();
+    const el=document.getElementById('act-pnl');
+    if(el && pr && typeof pr.realized==='number'){
+      const up=pr.realized>=0, col=up?'#4ade80':'#f87171', sign=up?'+':'-';
+      const wr=(pr.winRate!=null)?(' · Win rate <b style="color:#e8e6f0">'+pr.winRate+'%</b>'):'';
+      el.style.display='block';
+      el.innerHTML='Realized P&amp;L <b style="color:'+col+'">'+sign+'$'+Math.abs(pr.realized).toFixed(2)+'</b>'+wr+' · Fees <b style="color:#e8b87a">$'+(Number(pr.totalFees)||0).toFixed(2)+'</b>';
+    }
+  }catch(e){}
+  try{
+    const r=await fetch('/api/paper/trades'); const d=await r.json();
+    const trades=(d&&d.trades)||[];
+    if(!d.success || !trades.length){ list.innerHTML='<div style="color:#6c6c80;font:600 11px \'JetBrains Mono\',monospace">No paper trades yet.</div>'; if(cnt) cnt.textContent='0 trades'; return; }
+    if(cnt) cnt.textContent=d.count+' trade'+(d.count>1?'s':'');
+    const p6=n=>'$'+Number(n).toFixed(6);
+    const vol=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:0});
+    const usd=n=>'$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
+    list.innerHTML='<div class="act-head"><span>Time (UTC)</span><span>Side</span><span>Volume</span><span>Price</span><span>Cost</span></div>'+
+      trades.map(t=>{ const buy=t.side==='buy'; const tm=(t.time||'').slice(5,16).replace('T',' ');
+        return '<div class="act-row"><span style="color:#8f8fa3">'+tm+'</span><span style="color:'+(buy?'#4ade80':'#f87171')+';font-weight:800">'+(buy?'BUY':'SELL')+'</span><span>'+vol(t.volume)+' DOG</span><span>'+p6(t.price)+'</span><span>'+usd(t.cost)+'</span></div>';
+      }).join('');
+  }catch(e){ list.innerHTML='<div style="color:#e8b87a;font:600 11px \'JetBrains Mono\',monospace">Activity unavailable.</div>'; }
+})();
+</script>
+<script>
+// ===== Settings extras — profile name, replay tutorial, reset dashboard =====
+(function(){
+  const nm=document.getElementById('set-name');
+  if(nm){ nm.value=localStorage.getItem('displayName')||''; nm.addEventListener('input',()=>localStorage.setItem('displayName', nm.value.trim())); }
+  const rp=document.getElementById('set-replay');
+  if(rp) rp.addEventListener('click',()=>{ const m=document.getElementById('set-modal'); if(m) m.style.display='none'; if(typeof window.openWelcome==='function') window.openWelcome(); });
+  const rs=document.getElementById('set-reset');
+  if(rs) rs.addEventListener('click',()=>{
+    if(!window.confirm('Reset the dashboard to defaults? This clears your local customization (panels, layout, name, AI toggle). Your paper & Kraken data are not affected.')) return;
+    ['panel.vote','panel.actions','panel.sage','llmProvider','sageLiveOn','hideBalance','displayName','agentdog_layout_order_v1','agentdog_layout_hidden_v1','agentdog_welcomed_v1'].forEach(k=>localStorage.removeItem(k));
+    location.reload();
+  });
 })();
 </script>
 </body>

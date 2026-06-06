@@ -393,6 +393,80 @@ export async function getSpreads() {
   }
 }
 
+/**
+ * Read-only Kraken account snapshot via `kraken balance` (READ-ONLY, authenticated).
+ * Reads KRAKEN_API_KEY + KRAKEN_API_SECRET from env (the CLI consumes them automatically).
+ * NEVER places an order or withdraws — it only READS balances.
+ * Returns { connected:false, configured:false } when no key is set (paper-only).
+ * @returns {Promise<Object>}
+ */
+export async function getKrakenAccount() {
+  if (!process.env.KRAKEN_API_KEY || !process.env.KRAKEN_API_SECRET) {
+    return { connected: false, configured: false };
+  }
+  try {
+    const data = await krakenExec(['balance', '-o', 'json']);
+    if (data && data.error) {
+      return { connected: false, configured: true, error: String(data.message || data.error) };
+    }
+    const balances = {};
+    let usd = 0;
+    let dog = 0;
+    for (const [asset, amt] of Object.entries(data || {})) {
+      const n = parseFloat(amt);
+      if (!isFinite(n) || n === 0) continue;
+      balances[asset] = n;
+      if (asset === 'ZUSD' || asset === 'USD') usd += n;
+      if (asset === 'DOG') dog += n;
+    }
+    return {
+      connected: true,
+      configured: true,
+      usd,
+      dog,
+      balances,
+      source: 'kraken-cli',
+      command: 'kraken balance',
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('[getKrakenAccount] Failed:', error.message);
+    return { connected: false, configured: true, error: error.message };
+  }
+}
+
+/**
+ * Paper trade history — the bot's executed paper trades via `kraken paper history` (READ-ONLY, simulated).
+ * @returns {Promise<Object>}
+ */
+export async function getPaperTrades() {
+  try {
+    const data = await krakenExec(['paper', 'history', '-o', 'json']);
+    const filled = Array.isArray(data.trades) ? data.trades.filter((t) => t.status === 'filled') : [];
+    filled.sort((a, b) => new Date(b.time) - new Date(a.time));
+    return {
+      success: true,
+      count: filled.length,
+      trades: filled.map((t) => ({
+        id: t.id,
+        time: t.time,
+        side: t.side,
+        pair: t.pair,
+        price: parseFloat(t.price),
+        volume: parseFloat(t.volume),
+        cost: parseFloat(t.cost),
+        fee: parseFloat(t.fee)
+      })),
+      source: 'kraken-cli',
+      command: 'kraken paper history',
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('[getPaperTrades] Failed:', error.message);
+    return { success: false, error: error.message, trades: [] };
+  }
+}
+
 export default {
   getCliStatus,
   getDogTicker,
@@ -403,5 +477,7 @@ export default {
   paperBuy,
   paperSell,
   getPairInfo,
-  getSpreads
+  getSpreads,
+  getKrakenAccount,
+  getPaperTrades
 };

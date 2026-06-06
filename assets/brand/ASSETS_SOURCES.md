@@ -67,7 +67,7 @@
 
 ## Assets to Acquire (Manual)
 
-The following should be collected manually if needed:
+The following should be collected manually by the maintainer if needed:
 
 1. **DOG Runes official logo PNG/SVG**
    - Source: Contact @doggotothemoon on Twitter

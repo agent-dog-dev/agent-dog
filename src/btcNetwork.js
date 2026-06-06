@@ -12,18 +12,7 @@ const CACHE_TTL = 30000; // 30s
 let cache = null;
 let cacheTime = 0;
 
-async function getBtcPriceCoinGecko() {
-  try {
-    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd', { signal: AbortSignal.timeout(4000) });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.bitcoin?.usd || null;
-  } catch (e) {
-    return null;
-  }
-}
-
-async function getBtcPriceKrakenFallback() {
+async function getBtcPriceKraken() {
   try {
     const out = execSync(`"${KRAKEN_BIN}" ticker XBTUSD -o json 2>/dev/null`, { timeout: 4000 }).toString();
     const data = JSON.parse(out);
@@ -73,9 +62,8 @@ async function getBtcNetwork() {
     time: b.timestamp
   }));
 
-  // Get BTC price from CoinGecko or Kraken fallback
-  let btcPrice = await getBtcPriceCoinGecko();
-  if (!btcPrice) btcPrice = await getBtcPriceKrakenFallback();
+  // Get BTC price from Kraken CLI (XBTUSD)
+  const btcPrice = await getBtcPriceKraken();
 
   const result = {
     lowFee: fees.economyFee ?? fees.hourFee ?? null,

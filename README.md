@@ -6,15 +6,18 @@
 
 *Built for the DOG Army that wants to keep their sats safe.*
 
-*Four Kraken CLI agents. Paper first. Human in control. Multi-agent ready.*
+*Four Kraken CLI agents · deterministic decisions · paper-first · optional AI co-pilot · read-only Kraken account view.*
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-2.0.0-a78bfa)](CHANGELOG.md)
 [![Paper Only](https://img.shields.io/badge/Mode-Paper%20Only-orange)](docs/SAFETY.md)
 [![Kraken CLI](https://img.shields.io/badge/Built%20on-Kraken%20CLI-7c3aed)](https://github.com/krakenfx/kraken-cli)
 [![Multi-Agent](https://img.shields.io/badge/Works%20with-Claude%20%C2%B7%20Cursor%20%C2%B7%20Codex%20%C2%B7%20OpenClaw-blueviolet)](docs/MCP_AGENT_COMPATIBILITY.md)
 [![Bitcoin Runes](https://img.shields.io/badge/Asset-%24DOG%20on%20Bitcoin%20L1-f7931a)](https://pro.kraken.com/app/trade/dog-usd)
 
 **Five in the pack. One human in control. Zero risk. Woof to the moon. 🌙**
+
+📄 **[Read the full guide (PDF)](docs/Agent_DOG_Guide_v2.pdf)** — a 12-page project & dashboard walkthrough.
 
 </div>
 
@@ -62,7 +65,9 @@ Kraken CLI / MCP
 
 The four Kraken CLI agents do the work. **Sage** makes it understandable.
 
-Sage is an in-dashboard educational assistant that explains — in plain language — what the Pack Index means, why the Decision Engine says HOLD, what RSI / EMA / VWAP are, and what $DOG actually is. Sage reads the **live dashboard state** to answer in context.
+Sage is an in-dashboard educational assistant that explains — in plain language — what the Pack Index means, why the Decision Engine voted the way it did, what RSI / EMA / VWAP are, and what $DOG actually is. It reads the **live dashboard state** to answer in context — via a quick-ask bar at the top and an "Explain this vote / this plan" button on the relevant panels.
+
+Sage works out of the box with built-in answers. Add your own LLM key (`ANTHROPIC_API_KEY` in `.env`) to unlock live AI answers — **explain-only, never in the decision loop**. The dashboard is 100% usable without any key.
 
 **Sage explains. Sage never decides.** No trade recommendations, ever. The deterministic Compass stays in charge; the human stays in control.
 
@@ -70,25 +75,25 @@ Sage is an in-dashboard educational assistant that explains — in plain languag
 
 ## 📸 Visual Preview
 
-Live dashboard captured on May 26, 2026.
+A live **v2.0.0** read-only cockpit — no real funds, no real orders. Paper-first; you confirm everything on Kraken.
 
-### Dashboard Overview
+### Live Cockpit
 
-The cockpit displays live DOGUSD market data, the deterministic Pack Index, the Decision Engine output, and the read-only paper portfolio.
+DOGUSD price + TradingView chart, the deterministic **Pack Index**, the **Decision Engine**, and the paper portfolio with a **Paper / 🔒 Kraken (read-only)** toggle — optionally view your real balance (read-only) with a 👁 hide-balance switch.
 
-![Agent DOG Dashboard - Hero](docs/screenshots/01-hero-dashboard.png)
+![Agent DOG — Live Cockpit](docs/screenshots/01-hero-dashboard.png)
 
-### Market Intelligence
+### Multi-Agent Vote (deterministic)
 
-Risk analysis, agent timeline, Bitcoin network context, and the live DOG/USD trade tape — all read-only.
+Four weighted agents — Trend · Momentum · Liquidity · Risk (with veto) — produce the decision. 100% reproducible, no black box. Optional 🦉 "Explain this vote" when an LLM key is set.
 
-![Agent DOG Dashboard - Market Intelligence](docs/screenshots/02-market-intelligence.png)
+![Agent DOG — Multi-Agent Vote](docs/screenshots/02-market-intelligence.png)
 
-### Market Pulse & Safety
+### Explore — Market Intelligence
 
-Real-time technical indicators (RSI, EMA, VWAP, Volume Impulse) and the safety layer enforced by hard-coded rules.
+Pair verification (`kraken pairs` + `kraken spreads`), BTC network context, the live DOG/USD trade tape, and Market Pulse (RSI / EMA / VWAP) — all read-only.
 
-![Agent DOG Dashboard - Market Pulse & Safety](docs/screenshots/03-market-pulse-safety.png)
+![Agent DOG — Market Intelligence](docs/screenshots/03-market-pulse-safety.png)
 
 ---
 
@@ -410,8 +415,8 @@ Most agent projects die in the API docs. [Kraken CLI](https://github.com/krakenf
 - ✅ **Stable errors**: structured error catalog with codes
 - ✅ **Paper trading**: built-in sandbox, no API key required
 - ✅ **MCP server**: local-first, services-scoped
-- ✅ **134 commands**: full spot, futures, websocket coverage
-- ✅ **50 official skills**: ready-to-use agent workflows
+- ✅ **Full coverage**: spot, futures, and websocket commands
+- ✅ **Agent skills**: ready-to-use official workflows
 
 Agent DOG follows Kraken CLI's agent-first conventions:
 
@@ -493,9 +498,9 @@ Agent DOG ships with read-only market intelligence panels in the dashboard. **Al
 ### BTC Network Context
 - Recommended fees (low / medium / fast in sat/vB)
 - Mempool size (transactions, vMB)
-- BTC spot price
+- BTC spot price — via Kraken CLI (`ticker XBTUSD`)
 - 4 most recent blocks (height, tx count, size, time)
-- Source: [mempool.space](https://mempool.space) public API
+- Source: fees / mempool / blocks from [mempool.space](https://mempool.space); BTC price from Kraken CLI
 
 ### DOG/USD Live Trade Tape
 - Last 20 DOGUSD trades on Kraken
@@ -510,24 +515,41 @@ Agent DOG ships with read-only market intelligence panels in the dashboard. **Al
 - Source: Kraken CLI `kraken ohlc DOGUSD --interval 5`
 - All metrics computed locally, deterministic, no LLM
 
+### Pair Verification
+- Confirms `DOGUSD` is the $DOG Bitcoin Runes pair (base **DOG**, not Dogecoin)
+- Asset metadata: min order, min cost, tick size, maker/taker fees, status
+- Live spread (now / avg / min / max)
+- Source: Kraken CLI `kraken pairs --pair DOGUSD` + `kraken spreads DOGUSD`
+
+### Activity — Trade History
+- The pack's paper trades (time, side, volume, price, cost) + realized P&L / win rate / fees
+- Source: Kraken CLI `kraken paper history`
+
+### Kraken Account (read-only, optional)
+- Connect a read-only Kraken key (**Query Funds only** — never trades or withdraws) to view your real balance, $DOG holdings and USD value
+- A 👁 toggle hides amounts; the agent never touches your funds
+- Source: Kraken CLI `kraken balance`
+
 These modules give the cockpit market depth — but **no indicator triggers a trade automatically**. The Compass still owns the decision. The Anchor still requires `--confirm`. Market intelligence informs, it never executes.
 
 ---
 
 ## 🗺️ Roadmap
 
-Phase 1 (this submission):
+Shipped (v2.0.0):
 - ✅ 4 Kraken CLI agents (3 reusable skills + Helm recipe)
-- ✅ Pack Index deterministic engine
-- ✅ Read-only cockpit dashboard
+- ✅ Deterministic multi-agent vote + Pack Index engine
+- ✅ Read-only cockpit dashboard (customizable layout, expandable nav)
 - ✅ Multi-agent compatibility
 - ✅ Paper-only safety contract
+- ✅ Sage AI co-pilot — built-in answers + optional live LLM (explain-only)
+- ✅ Read-only Kraken account view (your real balance) + 👁 hide-balance
+- ✅ Pair verification, spreads, and activity / trade history (more Kraken CLI commands)
 
-Phase 2 (post-submission):
-- ⏳ Optional LLM Explain Mode (bring your own API key, explain-only)
+Next:
 - ⏳ Helm skill — full pack memory + decision replay
 - ⏳ Multi-pair support (always opt-in, not default)
-- ⏳ WebSocket streaming via Kraken CLI
+- ⏳ WebSocket streaming + MCP demo via Kraken CLI
 
 Phase 3 (community):
 - ⏳ Community-contributed skills
@@ -557,6 +579,6 @@ The pack belongs to everyone.
 - **$DOG Army community** — for the inspiration and the energy
 - **Anthropic, Cursor, OpenAI, Google, Block** — for making powerful AI agents possible
 
-Built with ❤️ for the **DOG Army**.
+Built with ❤️ for the **DOG Army** by [@CryptStomb1217](https://twitter.com/CryptStomb1217).
 
 **Five in the pack. One human in control. Zero risk. Woof to the moon. 🌙**

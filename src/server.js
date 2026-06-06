@@ -8,7 +8,7 @@ import express from 'express';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { getCliStatus, getDogTicker, getPaperStatus, getPairInfo, getSpreads } from './kraken.js';
+import { getCliStatus, getDogTicker, getPaperStatus, getPairInfo, getSpreads, getKrakenAccount, getPaperTrades } from './kraken.js';
 import { makeDecision } from './strategy.js';
 import { paperState } from './state.js';
 import { getBtcNetwork } from './btcNetwork.js';
@@ -193,6 +193,23 @@ app.get('/api/dog/spreads', async (req, res) => {
   const data = await getSpreads();
   if (!data.success) return res.status(503).json({ error: 'Kraken CLI unavailable' });
   res.json(data);
+});
+
+// GET /api/account - Read-only Kraken account snapshot (real balance) via `kraken balance`. Paper-only if no key.
+app.get('/api/account', async (req, res) => {
+  res.json(await getKrakenAccount());
+});
+
+// GET /api/paper/trades - Paper trade history (the bot's executed paper trades, READ-ONLY)
+app.get('/api/paper/trades', async (req, res) => {
+  res.json(await getPaperTrades());
+});
+
+// GET /guide.pdf - Downloadable project & dashboard guide (PDF, no personal data)
+app.get('/guide.pdf', (req, res) => {
+  res.download(resolve(__dirname, '../docs/Agent_DOG_Guide_v2.pdf'), 'Agent_DOG_Guide.pdf', (err) => {
+    if (err && !res.headersSent) res.status(404).send('Guide not found');
+  });
 });
 
 // GET /api/dog/history - OHLC history for interactive chart
