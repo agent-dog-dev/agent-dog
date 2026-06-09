@@ -7,11 +7,17 @@
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { resolve } from 'path';
+import { existsSync } from 'fs';
+import './config.js'; // loads .env before env/binary resolution
 
 const execFileAsync = promisify(execFile);
 
-// Path to kraken CLI binary
-const KRAKEN_BIN = resolve(process.cwd(), 'kraken-cli-aarch64-apple-darwin', 'kraken');
+// Path to kraken CLI binary:
+// 1. KRAKEN_CLI_BIN env var (explicit override)
+// 2. repo-local extracted release folder
+// 3. `kraken` on PATH (official installer puts it there)
+const LOCAL_BIN = resolve(process.cwd(), 'kraken-cli-aarch64-apple-darwin', 'kraken');
+const KRAKEN_BIN = process.env.KRAKEN_CLI_BIN || (existsSync(LOCAL_BIN) ? LOCAL_BIN : 'kraken');
 const DEFAULT_TIMEOUT = 10000; // 10s timeout
 
 /**

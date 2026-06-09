@@ -160,11 +160,11 @@ We don't optimize for profit. We optimize for **not losing your sats**.
 ### 30 seconds with Claude Code
 
 ```bash
-# Install Kraken CLI (one-time)
-brew install krakenfx/tap/kraken-cli
+# Install Kraken CLI (one-time, official installer — puts `kraken` on your PATH)
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/krakenfx/kraken-cli/releases/latest/download/kraken-cli-installer.sh | sh
 
 # Clone Agent DOG
-git clone https://github.com/<your-username>/agent-dog.git ~/agent-dog
+git clone https://github.com/agent-dog-dev/agent-dog.git ~/agent-dog
 cd ~/agent-dog && npm install
 
 # Link skills to Claude Code
@@ -235,18 +235,22 @@ End-to-end coordinator that wires Beacon → Compass → Anchor → Helm. Logs e
 ### Prerequisites
 
 ```bash
-# Node.js 20+
+# Node.js 18+
 node -v
 
-# Kraken CLI (the foundation)
-brew install krakenfx/tap/kraken-cli
+# Kraken CLI (the foundation) — official installer, puts `kraken` on your PATH
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/krakenfx/kraken-cli/releases/latest/download/kraken-cli-installer.sh | sh
 kraken --version
+
+# Alternative: download a release from https://github.com/krakenfx/kraken-cli/releases
+# and extract it into the repo root (folder `kraken-cli-aarch64-apple-darwin/`),
+# or point KRAKEN_CLI_BIN to the binary.
 ```
 
 ### Option A — Skills mode (recommended for AI agents)
 
 ```bash
-git clone https://github.com/<your-username>/agent-dog.git ~/agent-dog
+git clone https://github.com/agent-dog-dev/agent-dog.git ~/agent-dog
 cd ~/agent-dog
 npm install
 cp .env.example .env
