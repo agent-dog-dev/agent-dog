@@ -240,10 +240,10 @@ app.get('/api/dog/history', (req, res) => {
 });
 
 // ============================================
-// AI Co-Pilot — Sage LLM Q&A (ADVISORY ONLY, never executes)
+// AI Trading Assistant — Sage LLM Q&A (ADVISORY ONLY, never executes)
 // The single POST exception. Does NOT touch trading/paper state.
 // ============================================
-const SAGE_SYSTEM_PROMPT = `You are Sage 🦉, the educational co-pilot inside Agent DOG — a READ-ONLY, paper-only dashboard for $DOG (DOG•GO•TO•THE•MOON on Bitcoin Runes, NOT Dogecoin).
+const SAGE_SYSTEM_PROMPT = `You are Sage 🦉, the educational trading assistant inside Agent DOG — a READ-ONLY, paper-only dashboard for $DOG (DOG•GO•TO•THE•MOON on Bitcoin Runes, NOT Dogecoin).
 
 Your role: explain market conditions, the deterministic Pack Index, the Decision Engine output, and indicators in plain language. If asked, you MAY outline what a cautious PAPER trade could look like.
 
@@ -270,7 +270,7 @@ app.post('/api/sage', async (req, res) => {
     return res.json({
       answer: null,
       configured: false,
-      message: 'AI Co-Pilot is off. Add ANTHROPIC_API_KEY to your .env to enable Sage live Q&A. The deterministic dashboard works fully without it.'
+      message: 'AI Trading Assistant is off. Add ANTHROPIC_API_KEY to your .env to enable Sage live Q&A. The deterministic dashboard works fully without it.'
     });
   }
 

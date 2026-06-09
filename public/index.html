@@ -1515,7 +1515,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ===== SAGE 🦉 Ask Anything — optional AI co-pilot (advisory only, never executes) =====
+// ===== SAGE 🦉 Ask Anything — optional AI trading assistant (advisory only, never executes) =====
 (function(){
   const input = document.getElementById('sage-input');
   const btn = document.getElementById('sage-ask-btn');
@@ -1946,7 +1946,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <button id="set-close" type="button" style="background:none;border:none;color:#888;font-size:24px;line-height:1;cursor:pointer">×</button>
     </div>
     <div style="padding:10px 12px;margin-bottom:16px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.25);border-radius:9px;font:600 11px 'JetBrains Mono',monospace;color:#9fdcb0;line-height:1.55">Agent DOG works fully <b>without any API key</b> — the engine is deterministic. A key only enables Sage's live explanations.</div>
-    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🦉 AI Co-Pilot (Sage)</div>
+    <div style="font:800 11px 'JetBrains Mono',monospace;color:#a78bfa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🦉 AI Trading Assistant (Sage)</div>
     <label style="display:block;font:600 11px 'JetBrains Mono',monospace;color:#aaa5b8;margin-bottom:5px">LLM provider</label>
     <select id="set-llm" style="width:100%;padding:9px 10px;margin-bottom:12px;background:#0c0c12;border:1px solid rgba(167,139,250,.3);border-radius:8px;color:#f5f5fa;font:700 12px 'JetBrains Mono',monospace">
       <option value="anthropic">Claude (Anthropic) — available</option>
@@ -2049,7 +2049,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function sageExplain(question, extra, outEl, btn){
     if(!available()){
       outEl.style.display='block'; outEl.style.color='#e8b87a';
-      outEl.textContent='🔒 Turn on the AI co-pilot (sidebar ⚙ → Settings; needs an API key in .env) for a plain-English explanation. The dashboard stays fully usable without it.';
+      outEl.textContent='🔒 Turn on the AI trading assistant (sidebar ⚙ → Settings; needs an API key in .env) for a plain-English explanation. The dashboard stays fully usable without it.';
       return;
     }
     const old=btn.textContent; btn.disabled=true; btn.textContent='🦉 Thinking…';
@@ -2190,7 +2190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const q=input.value.trim(); if(!q) return;
     if(!aiOn()){
       out.style.display='block'; out.style.color='#e8b87a';
-      out.textContent='🔒 Turn on the AI co-pilot (sidebar ⚙ → Settings; needs an API key in .env) to ask live questions. The deterministic dashboard works without it.';
+      out.textContent='🔒 Turn on the AI trading assistant (sidebar ⚙ → Settings; needs an API key in .env) to ask live questions. The deterministic dashboard works without it.';
       return;
     }
     const old=btn.textContent; btn.disabled=true; btn.textContent='…';
