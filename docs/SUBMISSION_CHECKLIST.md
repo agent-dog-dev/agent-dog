@@ -11,14 +11,14 @@
 
 ### 2. Kraken CLI Integration
 
-- [x] CLI binary present: `kraken-cli-aarch64-apple-darwin/kraken`
+- [x] CLI binary available: repo-local folder, `KRAKEN_CLI_BIN`, or `kraken` on PATH
 - [x] Version verified: v0.3.2
 - [x] Checksum validated
 - [x] `kraken ticker DOGUSD` works
 - [x] `kraken paper status` works
 - [x] `kraken paper buy/sell` works (paper mode)
 
-### 3. Telegram Bot
+### 3. Telegram Bot (optional module — dashboard is the primary interface since v2.0.0)
 
 - [x] `/start` responds
 - [x] `/dog` shows live price + decision
@@ -64,19 +64,20 @@
 
 ### 7. Demo Video
 
-- [ ] Recorded (90 seconds)
-- [ ] Shows dashboard
-- [ ] Shows Telegram commands
-- [ ] Shows /confirm flow
-- [ ] Clear narration
-- [ ] Smooth transitions
+- [x] Recorded (3:17 — contest minimum is 60 seconds)
+- [x] Shows dashboard (full real walkthrough: vote, Sage, Trade Plan, Settings, Edit layout)
+- [x] Shows the 4-agent vote + Risk veto
+- [x] Shows human-in-control flow (plan → approve)
+- [x] Animated captions + licensed music (no narration by design)
+- [x] 1920x1080, smooth transitions
 
 ### 8. Social Post
 
-- [ ] Tweet drafted (280 chars)
-- [ ] Includes #KrakenAgentZero
-- [ ] Includes project link
-- [ ] Screenshot attached
+- [x] Submission update thread posted on X (2026-06-09):
+      https://x.com/CryptStomb1217/status/2064371434944619002
+- [x] @KrakenPro tagged
+- [x] Includes project link
+- [x] Demo video attached
 
 ---
 
@@ -84,7 +85,7 @@
 
 ```bash
 # Run all checks
-cd ~/agent-zero-kraken
+cd ~/agent-dog
 
 npm run check
 # Expected: ✅ Syntax OK
@@ -111,28 +112,29 @@ grep "TRADING_MODE\|LIVE_TRADING" src/config.js
 ### Files to Include
 
 ```
-~/agent-zero-kraken/
+~/agent-dog/
 ├── src/              # All source code
 ├── public/           # Dashboard UI
 ├── docs/             # Documentation
 ├── package.json      # Dependencies
-├── README.md         # Main documentation
-└── kraken-cli-*      # Kraken CLI binary
+└── README.md         # Main documentation
 ```
 
-### GitHub Repo (if applicable)
+Kraken CLI binary is NOT bundled — installed separately (see README Installation).
 
-- [ ] Repo created
-- [ ] Code pushed
-- [ ] README visible
-- [ ] License file (MIT)
+### GitHub Repo
+
+- [x] Repo created: https://github.com/agent-dog-dev/agent-dog
+- [x] Code pushed (v2.0.0)
+- [x] README visible
+- [x] License file (MIT)
 
 ### Video Upload
 
-- [ ] Uploaded to YouTube/Vimeo/Loom
-- [ ] Public or unlisted link
-- [ ] 1080p quality
-- [ ] Under 2 minutes
+- [x] Attached to the X submission thread
+- [x] Public link
+- [x] 1080p quality
+- [x] Meets contest minimum (60s+) — 3:17 full demo
 
 ---
 
@@ -151,15 +153,16 @@ grep "TRADING_MODE\|LIVE_TRADING" src/config.js
 
 ## Ready to Submit
 
-- [ ] All checkboxes above checked
-- [ ] Video recorded and uploaded
-- [ ] Tweet ready to post
-- [ ] No live trading ever executed
-- [ ] No API keys exposed
+- [x] All checkboxes above checked
+- [x] Video recorded and posted
+- [x] Submission update thread posted
+- [x] No live trading ever executed
+- [x] No API keys exposed
 
-**Submission Date**: 2026-05-23  
-**Project**: Agent DOG ($DOG Agent AI) v1.0.0  
-**Status**: ✅ READY
+**Initial Submission**: 2026-05-23 (v1.0.0)  
+**Submission Update**: 2026-06-09 (v2.0.0)  
+**Project**: Agent DOG  
+**Status**: ✅ SUBMITTED
 
 ---
 

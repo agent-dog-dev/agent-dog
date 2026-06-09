@@ -318,9 +318,9 @@ These rules are **hard-coded** and verified at runtime:
 | Live trading disabled | `LIVE_TRADING=false` constant | `src/config.js` |
 | No API key required | Kraken CLI public data only | n/a |
 | DOGUSD only | hard-coded pair, XDGUSD rejected | `src/strategy.js` |
-| Max 5% per trade | enforced in Anchor | `src/risk.js` |
+| Max 5% per trade | enforced in Anchor | `scripts/dog_paper_execute.sh` |
 | Human confirmation | `--confirm` flag required | `scripts/dog_paper_execute.sh` |
-| Confirmation timeout | 60 seconds | `src/risk.js` |
+| Confirmation timeout | 60 seconds | `src/telegram.js` |
 | Dashboard read-only | no POST/PUT/DELETE endpoints | `src/server.js` |
 | MCP services | only `market,paper` | docs/MCP_AGENT_COMPATIBILITY.md |
 

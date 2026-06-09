@@ -51,8 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Submission
 
 - Submitted to Kraken Agent Zero promotion (May 13 - June 10, 2026)
-- Public tweet announcement with 1:25 demo video
-- Endorsed by @LeonidasNFT — creator of $DOG (Bitcoin Runes)
+- Initial public submission tweet with 1:24 demo video (v1)
+- v2.0.0 submission update thread with full 3:17 demo video (2026-06-09):
+  https://x.com/CryptStomb1217/status/2064371434944619002
 
 ### Technical Stack
 
